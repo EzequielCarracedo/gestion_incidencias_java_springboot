@@ -14,7 +14,7 @@ public class IncidenciaService {
     private List<Incidencia> llistatIncidencies;
 
     public IncidenciaService() {
-       this.llistatIncidencies = new ArrayList<>();
+        this.llistatIncidencies = new ArrayList<>();
     }
 
     public Incidencia crearIncidencia(Incidencia incidencia, Usuario usuario) {

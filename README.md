@@ -14,7 +14,4 @@ migrada progresivamente a una API REST siguiendo buenas prácticas de arquitectu
 🚧 En desarrollo  
 Actualmente migrando el modelo y la lógica de negocio desde la versión de consola.
 
-## Próximos pasos
-- Migrar entidades (Usuario, Incidencia)
-- Crear servicios
-- Exponer endpoints REST
+

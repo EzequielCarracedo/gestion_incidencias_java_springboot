@@ -1,8 +1,23 @@
 package com.ezequielcarracedo.gestionincidencias.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "incidencia")
 public class Incidencia {
+
+    @Id
+    @Column(name = "id")
     private int id;
     private String descripcion;
+
+    @ManyToOne // <--- AQUESTA ÉS LA CLAU: Moltes incidències per a un sol usuari
+    @JoinColumn(name = "id_cliente")
     private Usuario user;
     private EstatIncidencia estado;
 
@@ -16,7 +31,9 @@ public class Incidencia {
 
         this.id = id;
         this.descripcion = descripcion;
+
         this.user = user;
+
         this.estado = EstatIncidencia.ABIERTA;
 
         if (this.descripcion == null || this.descripcion.isBlank()) {
@@ -64,21 +81,22 @@ public class Incidencia {
 
         if (estado.equals(EstatIncidencia.ABIERTA) && nuevoEstado.equals(EstatIncidencia.EN_PROCESO)) {
             this.estado = EstatIncidencia.EN_PROCESO;
-           
+
             return true;
         } else if (estado.equals(EstatIncidencia.EN_PROCESO) && nuevoEstado.equals(EstatIncidencia.CERRADA)) {
             this.estado = EstatIncidencia.CERRADA;
-           
+
             return true;
         } else {
-            //throw new IllegalArgumentException("NO SE PUEDE CAMBIAR A " + nuevoEstado + " DIRECTAMENTE.\n");
+            // throw new IllegalArgumentException("NO SE PUEDE CAMBIAR A " + nuevoEstado + "
+            // DIRECTAMENTE.\n");
             return false;
         }
     }
 
     public String imprimirIncidencia() {
         return "ID INCIDENCIA: " + this.getId() + "\nDESCRIPCION: " + this.descripcion + "\nID USUARIO: "
-                + this.user.id() + "\nNOMBRE: " + this.user.nom();
+                + this.user.getId() + "\nNOMBRE: " + this.user.getNom();
     }
 
 }
