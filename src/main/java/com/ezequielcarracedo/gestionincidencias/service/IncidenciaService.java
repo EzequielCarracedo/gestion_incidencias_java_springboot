@@ -15,7 +15,10 @@ public class IncidenciaService {
 
     public IncidenciaService() {
         this.llistatIncidencies = new ArrayList<>();
+        llistatIncidencies.add(new Incidencia(1000,"PROBLEMA PANTALLA", new Usuario(1000,"Ezequiel","EMAIL@gmail.com" )));
     }
+
+    
 
     public Incidencia crearIncidencia(Incidencia incidencia, Usuario usuario) {
 

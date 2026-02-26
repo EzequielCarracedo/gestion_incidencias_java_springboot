@@ -2,17 +2,11 @@ package com.ezequielcarracedo.gestionincidencias.model;
 
 import java.util.regex.Pattern;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "usuario")
+
 public class Usuario {
 
-    @Id
-    @Column(name = "id_cliente")
+
     private int id;
     private String nom;
     private String email;
@@ -45,5 +39,18 @@ public class Usuario {
     String getEmail(){
         return email;
     }
+
+    public void setNom(String nom){
+        this.nom = nom;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public void setEmail(String email){
+        this.email = email;
+    }
+
 
 }

@@ -1,23 +1,17 @@
 package com.ezequielcarracedo.gestionincidencias.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "incidencia")
+
+
+
+
 public class Incidencia {
 
-    @Id
-    @Column(name = "id")
+
     private int id;
     private String descripcion;
 
-    @ManyToOne // <--- AQUESTA ÉS LA CLAU: Moltes incidències per a un sol usuari
-    @JoinColumn(name = "id_cliente")
+ 
     private Usuario user;
     private EstatIncidencia estado;
 
