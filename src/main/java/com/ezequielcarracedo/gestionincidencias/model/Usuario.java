@@ -1,56 +1,58 @@
 package com.ezequielcarracedo.gestionincidencias.model;
 
-import java.util.regex.Pattern;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class Usuario {
 
-
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int id;
+
+    @NotBlank(message = "EL NOMBRE ES OBLIGATORIO")
+    @Size(min = 1, max = 40, message = "NOMBRE MUY LARGO, MAXIMO 40 CARACTERES")
     private String nom;
+
+    @NotBlank(message = "EL CORREO ES OBLIGATORIO")
+    @Size(min = 1, max = 100, message = "CORREO MUY LARGO, MAXIMO 100 CARACTERES")
+    @Email(message = "FORMATO INCORRECTO")
     private String email;
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-            Pattern.CASE_INSENSITIVE);
 
-    public Usuario(){}
+    public Usuario() {
+    }
 
-    public Usuario(int id, String nom, String email) {
-
-        if (nom == null || nom.isBlank()) {
-            throw new IllegalArgumentException("\nEl nombre no puede estar vacío\n");
-        }
+    public Usuario(String nom, String email) {
         this.nom = nom;
-        if (email == null || email.isBlank() || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("\nEl email esta vacio o su formato es incorrecto.\n");
-        }
         this.email = email;
     }
 
-    String getNom(){
+    public String getNom() {
         return nom;
     }
 
-    int getId(){
+    public int getId() {
         return id;
     }
 
-    String getEmail(){
+    public String getEmail() {
         return email;
     }
 
-    public void setNom(String nom){
+    public void setNom(String nom) {
         this.nom = nom;
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         this.id = id;
     }
 
-    public void setEmail(String email){
+    public void setEmail(String email) {
         this.email = email;
     }
-
 
 }

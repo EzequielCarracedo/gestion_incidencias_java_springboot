@@ -1,38 +1,35 @@
 package com.ezequielcarracedo.gestionincidencias.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class Incidencia {
 
-
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int id;
+
+    @NotBlank(message = "LA DESCRIPCION ES OBLIGATORIA")
+    @Size(min = 1, max = 100, message = "LA DESCRIPCION ES MUY LARGA, MAXIMO 100 CARACTERES" )
     private String descripcion;
 
- 
+    @NotNull(message = "USUARIO NO PUEDE ESTAR VACIO")
     private Usuario user;
+
     private EstatIncidencia estado;
 
     // BUILDER
+    public Incidencia() {}
 
-    public Incidencia() {
+    public Incidencia( String descripcion, Usuario user) {
 
-    }
-
-    public Incidencia(int id, String descripcion, Usuario user) {
-
-        this.id = id;
         this.descripcion = descripcion;
 
         this.user = user;
 
         this.estado = EstatIncidencia.ABIERTA;
-
-        if (this.descripcion == null || this.descripcion.isBlank()) {
-            throw new IllegalArgumentException("La descripcion no puede estar vacia.");
-        }
     }
 
     // GETTERS
@@ -70,6 +67,10 @@ public class Incidencia {
         this.user = user;
     }
 
+    public void setEstado(EstatIncidencia estado){
+        this.estado = estado;
+    }
+
     // CAMBIAR ESTADO
     public boolean cambiarEstado(EstatIncidencia nuevoEstado) {
 
@@ -82,15 +83,13 @@ public class Incidencia {
 
             return true;
         } else {
-            // throw new IllegalArgumentException("NO SE PUEDE CAMBIAR A " + nuevoEstado + "
-            // DIRECTAMENTE.\n");
-            return false;
+            throw new IllegalArgumentException("NO SE PUEDE CAMBIAR A " + nuevoEstado + " DIRECTAMENTE.\n");
         }
     }
 
     public String imprimirIncidencia() {
-        return "ID INCIDENCIA: " + this.getId() + "\nDESCRIPCION: " + this.descripcion + "\nID USUARIO: "
-                + this.user.getId() + "\nNOMBRE: " + this.user.getNom();
+        return "ID INCIDENCIA: " + this.getId() + "\nDESCRIPCION: " + this.getDescripcion() + "\nID USUARIO: "
+                + this.user.getId() + "\nNOMBRE: " + this.getUser().getNom();
     }
 
 }

@@ -2,9 +2,12 @@ package com.ezequielcarracedo.gestionincidencias.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
+import com.ezequielcarracedo.gestionincidencias.exception.IncidenciaNoEncontradaException;
+import com.ezequielcarracedo.gestionincidencias.model.EstatIncidencia;
 import com.ezequielcarracedo.gestionincidencias.model.Incidencia;
 import com.ezequielcarracedo.gestionincidencias.model.Usuario;
 
@@ -12,32 +15,42 @@ import com.ezequielcarracedo.gestionincidencias.model.Usuario;
 public class IncidenciaService {
 
     private List<Incidencia> llistatIncidencies;
+    private AtomicInteger contadorIncidencia = new AtomicInteger(1000);
+    private AtomicInteger contadorUser = new AtomicInteger(1000);
 
     public IncidenciaService() {
         this.llistatIncidencies = new ArrayList<>();
-        llistatIncidencies.add(new Incidencia(1000,"PROBLEMA PANTALLA", new Usuario(1000,"Ezequiel","EMAIL@gmail.com" )));
+        Incidencia incidencia = new Incidencia("PROBLEMA PANTALLA",
+                new Usuario("Ezequiel", "correoL@gmail.com"));
+        incidencia.setId(contadorIncidencia.getAndIncrement());
+        incidencia.getUser().setId(contadorUser.getAndIncrement());
+        llistatIncidencies.add(incidencia);
     }
 
-    
-
     public Incidencia crearIncidencia(Incidencia incidencia, Usuario usuario) {
-
-        incidencia.setId(100);
+        incidencia.setId(contadorIncidencia.getAndIncrement());
+        usuario.setId(contadorUser.getAndIncrement());
         incidencia.setUser(usuario);
         llistatIncidencies.add(incidencia);
         return incidencia;
-
     }
 
     public List<Incidencia> listarIncidencias() {
+        if (llistatIncidencies.size() == 0) {
+            throw new IncidenciaNoEncontradaException("LISTA DE INCIDENCIAS VACIA");
+        }
         return llistatIncidencies;
     }
 
-    public void eliminarIncidencia(int index) {
-        llistatIncidencies.remove(index);
+    public boolean eliminarIncidencia(Incidencia incidencia) {
+        return llistatIncidencies.remove(incidencia);
     }
 
-    public Incidencia buscarPorId(int id) {
+    public Incidencia buscarPorId(int id)  {
+
+        if (llistatIncidencies.size() == 0) {
+            throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
+        }
 
         for (int it = 0; it < llistatIncidencies.size(); it++) {
             int idElemento = llistatIncidencies.get(it).getId();
@@ -45,25 +58,26 @@ public class IncidenciaService {
                 return llistatIncidencies.get(it);
             }
         }
-        return null;
+        throw new IncidenciaNoEncontradaException("NO EXISTE NINGUNA INCIDENCIA CON EL ID: " + id);
     }
 
     public List<Incidencia> listarPorEstado(int estado) {
-        String estat = "";
+        EstatIncidencia estat;
         List<Incidencia> incidenciesEstat = new ArrayList<Incidencia>();
         switch (estado) {
             case 1:
-                estat = "ABIERTA";
+                estat = EstatIncidencia.ABIERTA;
                 break;
             case 2:
-                estat = "EN_PROCESO";
+                estat = EstatIncidencia.EN_PROCESO;
                 break;
             default:
-                estat = "CERRADA";
+                estat = EstatIncidencia.CERRADA;
                 break;
         }
+
         for (int it = 0; it < llistatIncidencies.size(); it++) {
-            if (llistatIncidencies.get(it).getEstado().toString().equals(estat)) {
+            if (llistatIncidencies.get(it).getEstado() == estat) {
                 incidenciesEstat.add(llistatIncidencies.get(it));
             }
         }
