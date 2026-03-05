@@ -11,6 +11,8 @@ import com.ezequielcarracedo.gestionincidencias.service.UsuarioService;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,12 +71,13 @@ public class UsuarioController {
     @PostMapping()
     public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
         try {
-            usuarioService.crearUsuario(usuario);
+            Usuario userNou = usuarioService.crearUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userNou);
+
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
 
-        return ResponseEntity.ok(usuario);
     }
 
     // Modificar

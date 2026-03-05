@@ -18,13 +18,11 @@ public class IncidenciaService {
     private final UsuarioService usuarioService;
     private AtomicInteger contadorIncidencia = new AtomicInteger(1000);
 
-
     public IncidenciaService(UsuarioService usuarioService) {
         this.llistatIncidencies = new ArrayList<>();
         this.usuarioService = usuarioService;
-
-        Usuario userProva = usuarioService.buscarPorId(1000);
-
+        Usuario userProva = new Usuario("Ezequiel", "correoL@gmail.com");
+        userProva = usuarioService.crearUsuario(userProva);
         Incidencia incidencia = new Incidencia("PROBLEMA PANTALLA", userProva);
         incidencia.setId(contadorIncidencia.getAndIncrement());
 

@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
-import com.ezequielcarracedo.gestionincidencias.exception.IncidenciaNoEncontradaException;
 import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoEncontradoException;
 import com.ezequielcarracedo.gestionincidencias.model.Usuario;
 
@@ -42,7 +41,7 @@ public class UsuarioService {
     public Usuario buscarPorId(int id) {
 
         if (llistatUsuarios.size() == 0) {
-            throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
+            throw new UsuarioNoEncontradoException("LA LISTA ESTA VACIA");
         }
 
         for (int it = 0; it < llistatUsuarios.size(); it++) {
