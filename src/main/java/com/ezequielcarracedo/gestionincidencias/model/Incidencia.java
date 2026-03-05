@@ -12,7 +12,7 @@ public class Incidencia {
     private int id;
 
     @NotBlank(message = "LA DESCRIPCION ES OBLIGATORIA")
-    @Size(min = 1, max = 100, message = "LA DESCRIPCION ES MUY LARGA, MAXIMO 100 CARACTERES" )
+    @Size(min = 1, max = 100, message = "LA DESCRIPCION ES MUY LARGA, MAXIMO 100 CARACTERES")
     private String descripcion;
 
     @NotNull(message = "USUARIO NO PUEDE ESTAR VACIO")
@@ -21,9 +21,10 @@ public class Incidencia {
     private EstatIncidencia estado;
 
     // BUILDER
-    public Incidencia() {}
+    public Incidencia() {
+    }
 
-    public Incidencia( String descripcion, Usuario user) {
+    public Incidencia(String descripcion, Usuario user) {
 
         this.descripcion = descripcion;
 
@@ -67,24 +68,17 @@ public class Incidencia {
         this.user = user;
     }
 
-    public void setEstado(EstatIncidencia estado){
-        this.estado = estado;
-    }
-
-    // CAMBIAR ESTADO
-    public boolean cambiarEstado(EstatIncidencia nuevoEstado) {
-
-        if (estado.equals(EstatIncidencia.ABIERTA) && nuevoEstado.equals(EstatIncidencia.EN_PROCESO)) {
+    public void setEstado(EstatIncidencia nuevoEstado) {
+        if (this.estado == EstatIncidencia.ABIERTA && nuevoEstado == EstatIncidencia.EN_PROCESO) {
             this.estado = EstatIncidencia.EN_PROCESO;
 
-            return true;
-        } else if (estado.equals(EstatIncidencia.EN_PROCESO) && nuevoEstado.equals(EstatIncidencia.CERRADA)) {
+        } else if (this.estado == EstatIncidencia.EN_PROCESO && nuevoEstado == EstatIncidencia.CERRADA) {
             this.estado = EstatIncidencia.CERRADA;
 
-            return true;
         } else {
             throw new IllegalArgumentException("NO SE PUEDE CAMBIAR A " + nuevoEstado + " DIRECTAMENTE.\n");
         }
+
     }
 
     public String imprimirIncidencia() {

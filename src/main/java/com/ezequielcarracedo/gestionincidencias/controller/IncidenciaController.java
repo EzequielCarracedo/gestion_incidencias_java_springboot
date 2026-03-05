@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ezequielcarracedo.gestionincidencias.exception.IncidenciaNoEncontradaException;
+import com.ezequielcarracedo.gestionincidencias.model.EstatIncidencia;
 import com.ezequielcarracedo.gestionincidencias.model.Incidencia;
 import com.ezequielcarracedo.gestionincidencias.service.IncidenciaService;
 
@@ -41,7 +42,7 @@ public class IncidenciaController {
 
       // Listar por estado
     @GetMapping("estado/{estado}")
-    public ResponseEntity<?> getIncidenciaEstado(@PathVariable int estado) {
+    public ResponseEntity<?> getIncidenciaEstado(@PathVariable EstatIncidencia estado) {
         List<Incidencia> llistatIncidencia;
         try {
             llistatIncidencia = incidenciaService.listarPorEstado(estado);
@@ -95,12 +96,10 @@ public class IncidenciaController {
 
     // Modificar
     @PutMapping("/{id}")
-    public ResponseEntity<?> putMethodName(@PathVariable int id, @RequestBody Incidencia incidenciaModificada) {
+    public ResponseEntity<?> modificarIncidencia(@PathVariable int id, @RequestBody Incidencia incidenciaModificada) {
         Incidencia incidencia = new Incidencia();
         try {
-            incidencia = incidenciaService.buscarPorId(id);
-            incidencia.setDescripcion(incidenciaModificada.getDescripcion());
-            incidencia.setEstado(incidenciaModificada.getEstado());
+            incidencia = incidenciaService.actualizarIncidencia(incidenciaModificada, id);
             return ResponseEntity.ok(incidencia);
         } catch (IncidenciaNoEncontradaException e) {
             return ResponseEntity.status(404).body(e.getMessage());
