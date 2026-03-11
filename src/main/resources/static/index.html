@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ezequiel Carracedo">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>GESTOR DE INCIDENCIAS</title>
+</head>
+
+<body>
+    <div id="contGeneral">
+        <h2>MENU</h2>
+        <div id="contMenu">
+            <button id="altaIncidencia">ALTA INCIDENCIA</button>
+            <button id="altaUser">ALTA USUARIO</button>
+            <button id="listaIncidencias">LISTA INCIDENCIAS</button>
+            <button id="listaUsers">LISTA USUARIOS</button>
+            <button id="buscarIncidencia">BUSCAR INCIDENCIA</button>
+        </div>
+
+        <div id="contSeccion">
+
+            <div id="formIncidencia" class="seccion" style="display: none;">
+                <h2>CREAR INCIDENCIA</h2>
+            </div>
+            <div id="formUser" class="seccion" style="display: none;"></div>
+            <div id="tablaIncidencias-container" class="seccion" style="display: none;"></div>
+            <div id="tablaUsers-container" class="seccion" style="display: none;"></div>
+            <div id="seccionBuscarIncidencia" class="seccion" style="display: none;"></div>
+
+        </div>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
