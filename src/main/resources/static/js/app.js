@@ -1,16 +1,24 @@
 
-let botonAltaIncidencia = document.getElementById("altaIncidencia");
-botonAltaIncidencia.addEventListener("click", () => mostrarSeccion("formIncidencia"));
+let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
+botonMenuAltaIncidencia.addEventListener("click", () => mostrarSeccion("formIncidencia"));
 
-let botonAltaUser = document.getElementById("altaUser");
-botonAltaUser.addEventListener("click", () => mostrarSeccion("formUser"));
+let botonMenuAltaUser = document.getElementById("botonMenuAltaUser");
+botonMenuAltaUser.addEventListener("click", () => mostrarSeccion("formUser"));
 
-let botonListaIncidencias = document.getElementById("listaIncidencias");
-botonListaIncidencias.addEventListener("click", () => mostrarSeccion("tablaIncidencias-container"));
+let botonMenuListaIncidencias = document.getElementById("botonMenuListaIncidencias");
+botonMenuListaIncidencias.addEventListener("click", () => mostrarSeccion("tablaIncidencias-container"));
 
-let botonListaUsers = document.getElementById("listaUsers");
-botonListaUsers.addEventListener("click", () => mostrarSeccion("tablaUsers-container"));
+let botonMenuListaUsers = document.getElementById("botonMenuListaUsers");
+botonMenuListaUsers.addEventListener("click", () => mostrarSeccion("tablaUsers-container"));
 
+let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidencia");
+botonMenuBuscarIncidencia.addEventListener("click", () => mostrarSeccion("seccionBuscarIncidencia"));
+
+
+
+
+let buscarIncidencia = document.getElementById("botonBuscarIncidencia");
+buscarIncidencia.addEventListener("click", () => buscarIncidenciaId());
 
 
 function mostrarSeccion(seccion) {
@@ -20,30 +28,71 @@ function mostrarSeccion(seccion) {
     });
 
     if (seccion === "tablaIncidencias-container") {
-        cargar();
+        cargarIncidencias();
     }
+    else if (seccion === "tablaUsers-container") {
+        cargarUsers();
+    }
+
     let seccionMostrar = document.getElementById(seccion);
     seccionMostrar.style.display = "block";
 }
 
 
-async function cargar() {
+async function cargarIncidencias() {
     const datos = await getAllIncidencias();
-    mostrarEnTabla(datos);
+    mostrarEnTablaIncidencias(datos);
 }
 
 
-function mostrarEnTabla(datos) {
+function mostrarEnTablaIncidencias(datos) {
 
-    let incidencias = datos.results;
-    let tabla = document.getElementById("tabla");
-
-
-    for (let incidencia of incidencias) {
+    let incidencias = datos;
+    let tabla = document.getElementById("tablaIncidencias");
+    tabla.innerHTML = "";
+    if (!Array.isArray(incidencias)) {
         let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${incidencia.id}</td>`
+        fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
+        tabla.appendChild(fila);
+    }
+    else {
+        for (let incidencia of incidencias) {
+            let fila = document.createElement("tr");
+            fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
+            tabla.appendChild(fila);
+        }
+    }
+
+}
+
+
+async function buscarIncidenciaId() {
+    let input = document.getElementById("idIncidencia");
+    let id = input.value;
+    const incidencia = await getIncidenciasById(id);
+
+    mostrarEnTablaIncidencias(incidencia);
+}
+
+
+
+
+//Users
+
+async function cargarUsers() {
+    const datos = await getAllUsers();
+    mostrarEnTablaUsers(datos);
+}
+
+function mostrarEnTablaUsers(datos) {
+    let users = datos;
+    let tabla = document.getElementById("tablaUsers");
+    tabla.innerHTML = "";
+    for (let user of users) {
+        let fila = document.createElement("tr");
+        fila.innerHTML = `<td>${user.id}</td><td>${user.nom}</td><td>${user.email}</td>`
         tabla.appendChild(fila);
     }
 
-
 }
+

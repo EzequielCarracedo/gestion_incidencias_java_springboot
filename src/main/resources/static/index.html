@@ -13,11 +13,11 @@
     <div id="contGeneral">
         <h2>MENU</h2>
         <div id="contMenu">
-            <button id="altaIncidencia">ALTA INCIDENCIA</button>
-            <button id="altaUser">ALTA USUARIO</button>
-            <button id="listaIncidencias">LISTA INCIDENCIAS</button>
-            <button id="listaUsers">LISTA USUARIOS</button>
-            <button id="buscarIncidencia">BUSCAR INCIDENCIA</button>
+            <button id="botonMenuAltaIncidencia">ALTA INCIDENCIA</button>
+            <button id="botonMenuAltaUser">ALTA USUARIO</button>
+            <button id="botonMenuListaIncidencias">LISTA INCIDENCIAS</button>
+            <button id="botonMenuListaUsers">LISTA USUARIOS</button>
+            <button id="botonMenuBuscarIncidencia">BUSCAR INCIDENCIA</button>
             <button id="modificarIncidencia">MODIFICAR INCIDENCIA</button>
 
         </div>
@@ -52,7 +52,7 @@
         </div>
 
         <div id="tablaIncidencias-container" class="seccion" style="display: none;">
-            <table border="1" id="tabla">
+            <table border="1" id="tablaIncidencias">
                 <tr>
                     <th>ID_INCIDENCIA</th>
                     <th>DESCRIPCION</th>
@@ -65,7 +65,7 @@
         </div>
 
         <div id="tablaUsers-container" class="seccion" style="display: none;">
-            <table border="1">
+            <table border="1" id="tablaUsers">
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE</th>
@@ -77,9 +77,9 @@
         <div id="seccionBuscarIncidencia" class="seccion" style="display: none;">
             <form action="">
                 <label for="id">ID:</label><br>
-                <input type="text" id="id" name="id"><br>
+                <input type="text" id="idIncidencia" name="id"><br>
             
-                <input type="submit" value="BUSCAR">
+                <input type="submit" value="BUSCAR" id="botonBuscarIncidencia">
             </form>
         </div>
 
