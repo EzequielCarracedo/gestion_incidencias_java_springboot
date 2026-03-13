@@ -15,10 +15,18 @@ let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidenc
 botonMenuBuscarIncidencia.addEventListener("click", () => mostrarSeccion("seccionBuscarIncidencia"));
 
 
-
-
 let buscarIncidencia = document.getElementById("botonBuscarIncidencia");
 buscarIncidencia.addEventListener("click", () => buscarIncidenciaId());
+
+
+
+//Crear incicencia 
+let crearIncidenciaElement = document.getElementById("crearIncidencia");
+crearIncidenciaElement.addEventListener("click", () => crearIncidenciaForm());
+
+//Selector usuarios
+let selectUsers = document.getElementById("selectUsers");
+selectUsers.addEventListener("click", () => cargarUsersSelect());
 
 
 function mostrarSeccion(seccion) {
@@ -52,7 +60,7 @@ function mostrarEnTablaIncidencias(datos) {
     tabla.innerHTML = "";
     if (!Array.isArray(incidencias)) {
         let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
+        fila.innerHTML = `<td>${incidencias.id}</td><td>${incidencias.descripcion}</td><td>${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
         tabla.appendChild(fila);
     }
     else {
@@ -71,7 +79,25 @@ async function buscarIncidenciaId() {
     let id = input.value;
     const incidencia = await getIncidenciasById(id);
 
+    let seccionMostrar = document.getElementById("tablaIncidencias-container");
+    seccionMostrar.style.display = "block";
+
+    let seccionOcultar = document.getElementById("seccionBuscarIncidencia");
+    seccionOcultar.style.display = "none";
+
     mostrarEnTablaIncidencias(incidencia);
+}
+
+async function crearIncidenciaForm() {
+    let input = document.getElementById("inputDescripcio");
+    let descripcion = input.value;
+
+    let inputUser = document.getElementById("selectUsers");
+    let user = inputUser.options[inputUser.selectedIndex].text;
+    let fila = document.createElement("div");
+    fila.innerHTML = "ERROR";
+    const res = await crearIncidenciaElement(descripcion, {nom: user, email:"gsdfds@gmail.com"});
+    if (!res.ok) document.appendChild(fila)
 }
 
 
@@ -92,6 +118,25 @@ function mostrarEnTablaUsers(datos) {
         let fila = document.createElement("tr");
         fila.innerHTML = `<td>${user.id}</td><td>${user.nom}</td><td>${user.email}</td>`
         tabla.appendChild(fila);
+    }
+
+}
+
+
+
+async function cargarUsersSelect() {
+    let selectUsers = document.getElementById("selectUsers");
+    let users = await getAllUsers();
+    selectUsers.innerHTML = "";
+
+    if (!Array.isArray(users) || users.length === 0) {
+        console.warn("No hay usuarios");
+        return;
+    }
+       for (let user of users) {
+        let option = document.createElement("option");
+        option.innerHTML = user.nom;
+        selectUsers.appendChild(option);
     }
 
 }

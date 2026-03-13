@@ -34,6 +34,29 @@ async function getIncidenciasById(id) {
 }
 
 
+async function crearIncidenciaForm(descripcion, usuario) {
+    try {
+        const res = await fetch(API_INCIDENCIAS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({descripcion, usuario })
+        });
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}`);
+        }
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+
+
+
+
+
 //Users
 async function getAllUsers() {
     try {
