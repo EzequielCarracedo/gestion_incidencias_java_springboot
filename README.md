@@ -12,6 +12,6 @@ migrada progresivamente a una API REST siguiendo buenas prácticas de arquitectu
 
 ## Estado del proyecto
 🚧 En desarrollo  
-Actualmente migrando el modelo y la lógica de negocio desde la versión de consola.
+Actualmente construyendo el front-end con Javascript.
 
 
