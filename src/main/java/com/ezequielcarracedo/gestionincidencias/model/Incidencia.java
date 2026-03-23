@@ -75,6 +75,8 @@ public class Incidencia {
         } else if (this.estado == EstatIncidencia.EN_PROCESO && nuevoEstado == EstatIncidencia.CERRADA) {
             this.estado = EstatIncidencia.CERRADA;
 
+        } else if (this.estado == EstatIncidencia.ABIERTA && nuevoEstado == EstatIncidencia.ABIERTA) {
+            this.estado = EstatIncidencia.ABIERTA;
         } else {
             throw new IllegalArgumentException("NO SE PUEDE CAMBIAR A " + nuevoEstado + " DIRECTAMENTE.\n");
         }

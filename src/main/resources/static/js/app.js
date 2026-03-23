@@ -1,4 +1,5 @@
 
+//Menu
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
 botonMenuAltaIncidencia.addEventListener("click", () => mostrarSeccion("formIncidencia"));
 
@@ -15,18 +16,23 @@ let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidenc
 botonMenuBuscarIncidencia.addEventListener("click", () => mostrarSeccion("seccionBuscarIncidencia"));
 
 
-let buscarIncidencia = document.getElementById("botonBuscarIncidencia");
-buscarIncidencia.addEventListener("click", () => buscarIncidenciaId());
 
+//Secciones
 
+//Buscar
+let botonBuscarIncidenciaForm = document.getElementById("botonBuscarIncidenciaForm");
+botonBuscarIncidenciaForm.addEventListener("click", () => handlerGetIncidenciaById());
 
 //Crear incicencia 
-let crearIncidenciaElement = document.getElementById("crearIncidencia");
-crearIncidenciaElement.addEventListener("click", () => crearIncidenciaForm());
+let botonCrearIncidenciaForm = document.getElementById("botonCrearIncidenciaForm");
+botonCrearIncidenciaForm.addEventListener("click", () => handlerCrearIncidenciaClick());
 
 //Selector usuarios
 let selectUsers = document.getElementById("selectUsers");
 selectUsers.addEventListener("click", () => cargarUsersSelect());
+
+
+
 
 
 function mostrarSeccion(seccion) {
@@ -36,10 +42,10 @@ function mostrarSeccion(seccion) {
     });
 
     if (seccion === "tablaIncidencias-container") {
-        cargarIncidencias();
+        handlerGetAllIncidenciasClick();
     }
     else if (seccion === "tablaUsers-container") {
-        cargarUsers();
+        handlerGetAllUsersClick();
     }
 
     let seccionMostrar = document.getElementById(seccion);
@@ -47,13 +53,9 @@ function mostrarSeccion(seccion) {
 }
 
 
-async function cargarIncidencias() {
-    const datos = await getAllIncidencias();
-    mostrarEnTablaIncidencias(datos);
-}
 
-
-function mostrarEnTablaIncidencias(datos) {
+//TABLE INCIDENCIAS
+function loadTablaIncidencias(datos) {
 
     let incidencias = datos;
     let tabla = document.getElementById("tablaIncidencias");
@@ -74,7 +76,13 @@ function mostrarEnTablaIncidencias(datos) {
 }
 
 
-async function buscarIncidenciaId() {
+async function handlerGetAllIncidenciasClick() {
+    const datos = await getAllIncidencias();
+    loadTablaIncidencias(datos);
+}
+
+
+async function handlerGetIncidenciaById() {
     let input = document.getElementById("idIncidencia");
     let id = input.value;
     const incidencia = await getIncidenciasById(id);
@@ -85,30 +93,70 @@ async function buscarIncidenciaId() {
     let seccionOcultar = document.getElementById("seccionBuscarIncidencia");
     seccionOcultar.style.display = "none";
 
-    mostrarEnTablaIncidencias(incidencia);
+    loadTablaIncidencias(incidencia);
 }
 
-async function crearIncidenciaForm() {
+async function handlerCrearIncidenciaClick() {
     let input = document.getElementById("inputDescripcio");
     let descripcion = input.value;
 
     let inputUser = document.getElementById("selectUsers");
-    let user = inputUser.options[inputUser.selectedIndex].text;
+    let user = null;
+    if (inputUser.selectedIndex !== -1) {
+        let id = inputUser.value;
+        user = await handlerGetUserId(id);
+    }
+    else {
+        alert("USUARIO NO SELECCIONADO");
+        return;
+    }
+
     let fila = document.createElement("div");
-    fila.innerHTML = "ERROR";
-    const res = await crearIncidenciaElement(descripcion, {nom: user, email:"gsdfds@gmail.com"});
-    if (!res.ok) document.appendChild(fila)
+
+    if (descripcion.length === 0) {
+        alert("DESCRIPCION OBLIGATORIA");
+        return;
+
+    }
+    const res = await crearIncidencia(descripcion, user);
+
+    if (res.ok) {
+        fila.innerHTML = JSON.stringify(res);
+        console.log("ok");
+    }
+
+    let contSeccions = document.getElementById("contSeccions");
+    contSeccions.appendChild(fila);
+
 }
+
+async function handlerGetUserId(id) {
+
+    const user = await getUserId(id);
+
+    return user;
+}
+
+
+async function handlerUpdateIncidenciaClick() {
+
+}
+
+async function handlerDeleteIncidenciaClick() {
+
+}
+
+
+
+
+
+
+
 
 
 
 
 //Users
-
-async function cargarUsers() {
-    const datos = await getAllUsers();
-    mostrarEnTablaUsers(datos);
-}
 
 function mostrarEnTablaUsers(datos) {
     let users = datos;
@@ -133,11 +181,27 @@ async function cargarUsersSelect() {
         console.warn("No hay usuarios");
         return;
     }
-       for (let user of users) {
+    for (let user of users) {
         let option = document.createElement("option");
-        option.innerHTML = user.nom;
+        option.value = user.id;
+        option.innerHTML = `${user.id} - ${user.nom}`
         selectUsers.appendChild(option);
     }
 
 }
+
+
+
+
+
+async function handlerGetAllUsersClick() {
+    const datos = await getAllUsers();
+    mostrarEnTablaUsers(datos);
+}
+
+
+
+
+
+
 

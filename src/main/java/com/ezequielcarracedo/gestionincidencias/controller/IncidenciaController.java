@@ -75,7 +75,7 @@ public class IncidenciaController {
         try {
             incidencia = incidenciaService.buscarPorId(id);
             incidenciaService.eliminarIncidencia(incidencia);
-            return ResponseEntity.status(204).body("INCIDENCIA BORRADA CORRECTAMENTE");
+            return ResponseEntity.status(204).build();
         } catch (IncidenciaNoEncontradaException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
