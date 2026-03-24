@@ -1,7 +1,10 @@
 
 //Menu
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
-botonMenuAltaIncidencia.addEventListener("click", () => mostrarSeccion("formIncidencia"));
+botonMenuAltaIncidencia.addEventListener("click", () => {
+    mostrarSeccion("formIncidencia")
+    cargarUsersSelect()
+})
 
 let botonMenuAltaUser = document.getElementById("botonMenuAltaUser");
 botonMenuAltaUser.addEventListener("click", () => mostrarSeccion("formUser"));
@@ -28,8 +31,8 @@ let botonCrearIncidenciaForm = document.getElementById("botonCrearIncidenciaForm
 botonCrearIncidenciaForm.addEventListener("click", () => handlerCrearIncidenciaClick());
 
 //Selector usuarios
-let selectUsers = document.getElementById("selectUsers");
-selectUsers.addEventListener("click", () => cargarUsersSelect());
+//let selectUsers = document.getElementById("selectUsers");
+//selectUsers.addEventListener("click", () => cargarUsersSelect());
 
 
 
@@ -49,7 +52,7 @@ function mostrarSeccion(seccion) {
     }
 
     let seccionMostrar = document.getElementById(seccion);
-    seccionMostrar.style.display = "block";
+    seccionMostrar.style.display = "flex";
 }
 
 
@@ -103,8 +106,11 @@ async function handlerCrearIncidenciaClick() {
     let inputUser = document.getElementById("selectUsers");
     let user = null;
     if (inputUser.selectedIndex !== -1) {
-        let id = inputUser.value;
-        user = await handlerGetUserId(id);
+        let idBuscar = inputUser.value;
+        user = {
+            id: idBuscar
+        }
+        //user = await handlerGetUserId(id);
     }
     else {
         alert("USUARIO NO SELECCIONADO");

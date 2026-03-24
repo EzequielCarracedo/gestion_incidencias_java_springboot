@@ -2,7 +2,6 @@ package com.ezequielcarracedo.gestionincidencias.model;
 
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 public class Usuario {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private int id;
 
     @NotBlank(message = "EL NOMBRE ES OBLIGATORIO")

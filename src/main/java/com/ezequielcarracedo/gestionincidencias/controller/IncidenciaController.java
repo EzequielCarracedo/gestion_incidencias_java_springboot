@@ -86,7 +86,7 @@ public class IncidenciaController {
     @PostMapping()
     public ResponseEntity<?> crearIncidencia(@RequestBody Incidencia incidencia) {
         try {
-            incidenciaService.crearIncidencia(incidencia, incidencia.getUser());
+            incidenciaService.crearIncidencia(incidencia, incidencia.getUser().getId());
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

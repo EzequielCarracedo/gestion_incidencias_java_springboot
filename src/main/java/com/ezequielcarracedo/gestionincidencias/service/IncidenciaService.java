@@ -29,9 +29,10 @@ public class IncidenciaService {
         llistatIncidencies.add(incidencia);
     }
 
-    public Incidencia crearIncidencia(Incidencia incidencia, Usuario usuario) {
+    public Incidencia crearIncidencia(Incidencia incidencia,  int id) {
         incidencia.setId(contadorIncidencia.getAndIncrement());
-        Usuario user = usuarioService.crearUsuario(usuario);
+        Usuario user = usuarioService.buscarPorId(id);
+     //   Usuario userr = usuarioService.crearUsuario(usuario);
         incidencia.setUser(user);
         llistatIncidencies.add(incidencia);
         return incidencia;
