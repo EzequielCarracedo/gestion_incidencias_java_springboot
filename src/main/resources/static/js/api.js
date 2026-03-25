@@ -88,3 +88,23 @@ async function getUserId(id) {
         console.error("Error:", error);
     }
 }
+
+
+async function crearUser(usuario) {
+     try {
+        const res = await fetch(API_USERS, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nom: usuario.nom, email: usuario.email })
+        });
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}`);
+        }
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("ERROR AL CREAR USUARIO:", error);
+        throw error;
+    }
+}

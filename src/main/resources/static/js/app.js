@@ -3,6 +3,8 @@
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
 botonMenuAltaIncidencia.addEventListener("click", () => {
     mostrarSeccion("formIncidencia")
+    let fila = document.getElementById("incidenciaCreada");
+    fila.innerHTML = "";
     cargarUsersSelect()
 })
 
@@ -16,28 +18,36 @@ let botonMenuListaUsers = document.getElementById("botonMenuListaUsers");
 botonMenuListaUsers.addEventListener("click", () => mostrarSeccion("tablaUsers-container"));
 
 let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidencia");
-botonMenuBuscarIncidencia.addEventListener("click", () => mostrarSeccion("seccionBuscarIncidencia"));
+botonMenuBuscarIncidencia.addEventListener("click", () => {
+    mostrarSeccion("seccionBuscarIncidencia")
+    resetTablaBusqueda();
+});
 
 
 
 //Secciones
 
-//Buscar
+//Buscar incidencia
 let botonBuscarIncidenciaForm = document.getElementById("botonBuscarIncidenciaForm");
-botonBuscarIncidenciaForm.addEventListener("click", () => handlerGetIncidenciaById());
+botonBuscarIncidenciaForm.addEventListener("click", () => {
+    handlerGetIncidenciaById()
+});
 
 //Crear incicencia 
 let botonCrearIncidenciaForm = document.getElementById("botonCrearIncidenciaForm");
 botonCrearIncidenciaForm.addEventListener("click", () => handlerCrearIncidenciaClick());
 
-//Selector usuarios
-//let selectUsers = document.getElementById("selectUsers");
-//selectUsers.addEventListener("click", () => cargarUsersSelect());
+
+
+//Crear user
+let botonCrearUserForm = document.getElementById("botonCrearUserForm");
+botonCrearUserForm.addEventListener("click", () => handlerCrearUserClick());
 
 
 
 
 
+//VISIBILIDAD SECCIONES
 function mostrarSeccion(seccion) {
     const secciones = document.querySelectorAll('.seccion');
     secciones.forEach(seccion => {
@@ -62,7 +72,7 @@ function loadTablaIncidencias(datos) {
 
     let incidencias = datos;
     let tabla = document.getElementById("tablaIncidencias");
-    tabla.innerHTML = "";
+    tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th></tr>`;
     if (!Array.isArray(incidencias)) {
         let fila = document.createElement("tr");
         fila.innerHTML = `<td>${incidencias.id}</td><td>${incidencias.descripcion}</td><td>${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
@@ -75,31 +85,49 @@ function loadTablaIncidencias(datos) {
             tabla.appendChild(fila);
         }
     }
-
 }
 
 
 async function handlerGetAllIncidenciasClick() {
-    const datos = await getAllIncidencias();
-    loadTablaIncidencias(datos);
+    try {
+        const datos = await getAllIncidencias();
+        loadTablaIncidencias(datos);
+    }
+    catch (error) {
+        alert("ERROR AL CARGAR INCIDENCIAS");
+    }
+
 }
 
 
 async function handlerGetIncidenciaById() {
     let input = document.getElementById("idIncidencia");
     let id = input.value;
-    const incidencia = await getIncidenciasById(id);
 
-    let seccionMostrar = document.getElementById("tablaIncidencias-container");
-    seccionMostrar.style.display = "block";
+    if (id.length === 0) {
+        alert("EL ID NO PUEDE ESTAR VACIO");
+        return
+    }
 
-    let seccionOcultar = document.getElementById("seccionBuscarIncidencia");
-    seccionOcultar.style.display = "none";
+    try {
+        const incidencia = await getIncidenciasById(id);
+        
+        if (!incidencia || Object.keys(incidencia).length === 0) {
+            alert("INCIDENCIA NO ENCONTRADA");
+            return;
+        }
+        loadTablaBusqueda(incidencia);
+    }
+    catch (error) {
+        alert("INCIDENCIA NO ENCONTRADA");
+        return
+    }
 
-    loadTablaIncidencias(incidencia);
+
 }
 
 async function handlerCrearIncidenciaClick() {
+
     let input = document.getElementById("inputDescripcio");
     let descripcion = input.value;
 
@@ -110,29 +138,33 @@ async function handlerCrearIncidenciaClick() {
         user = {
             id: idBuscar
         }
-        //user = await handlerGetUserId(id);
     }
     else {
         alert("USUARIO NO SELECCIONADO");
         return;
     }
 
-    let fila = document.createElement("div");
 
     if (descripcion.length === 0) {
         alert("DESCRIPCION OBLIGATORIA");
         return;
-
-    }
-    const res = await crearIncidencia(descripcion, user);
-
-    if (res.ok) {
-        fila.innerHTML = JSON.stringify(res);
-        console.log("ok");
     }
 
-    let contSeccions = document.getElementById("contSeccions");
-    contSeccions.appendChild(fila);
+    let fila = document.getElementById("incidenciaCreada");
+
+    try {
+        const res = await crearIncidencia(descripcion, user);
+        fila.innerHTML = `<b>INCIDENCIA CREADA CORRECTAMENTE<br>
+            <b><br>
+            <b>ID:</b> ${res.id} <br>
+            <b>Descripción:</b> ${res.descripcion} <br>
+            <b>User ID:</b> ${res.user.id}
+        `;
+
+    } catch (error) {
+        alert("ERROR AL CREAR INCIDENCIA");
+    }
+
 
 }
 
@@ -153,11 +185,86 @@ async function handlerDeleteIncidenciaClick() {
 }
 
 
+async function handlerCrearUserClick() {
+
+    let input = document.getElementById("nombre");
+    let nombre = input.value;
+
+    input = document.getElementById("correo");
+    let correo = input.value;
+
+
+    if (nombre.length === 0) {
+        alert("NOMBRE OBLIGATORIO");
+        return;
+    }
+    if (correo.length === 0) {
+        alert("EMAIL OBLIGATORIO");
+        return;
+    }
+
+    let user = {
+        nom: nombre,
+        email: correo
+    }
+
+    let fila = document.getElementById("usuarioCreado");
+
+    try {
+        const res = await crearUser(user);
+        fila.innerHTML = `<b>USUARIO CREADO CORRECTAMENTE<br>
+            <b><br>
+            <b>ID:</b> ${res.id} <br>
+            <b>NOMBRE:</b> ${res.nom} <br>
+            <b>EMAIL:</b> ${res.email}
+        `;
+
+
+    } catch (error) {
+        alert("Error creando incidencia");
+    }
+
+
+}
 
 
 
 
+function resetTablaBusqueda() {
 
+    let tabla = document.getElementById("tablaBusqueda");
+
+    tabla.innerHTML = "";
+}
+
+function loadTablaBusqueda(incidencia) {
+
+    let tabla = document.getElementById("tablaBusqueda");
+
+    tabla.innerHTML = `
+        <tr>
+            <th>ID</th>
+            <th>DESCRIPCION</th>
+            <th>ESTADO</th>
+            <th>ID_USUARIO</th>
+            <th>NOMBRE</th>
+            <th>EMAIL</th>
+        </tr>
+    `;
+
+    let fila = document.createElement("tr");
+
+    fila.innerHTML = `
+        <td>${incidencia.id}</td>
+        <td>${incidencia.descripcion}</td>
+        <td>${incidencia.estado}</td>
+        <td>${incidencia.user.id}</td>
+        <td>${incidencia.user.nom}</td>
+        <td>${incidencia.user.email}</td>
+    `;
+
+    tabla.appendChild(fila);
+}
 
 
 

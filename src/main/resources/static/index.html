@@ -32,11 +32,10 @@
                 <input type="text" id="inputDescripcio" name="descripcio"><br>
                 <label for="users">ASIGNA UN USUARIO:</label>
                 <select id="selectUsers">
-
                 </select>
-
                 <input type="button" value="CREAR" id="botonCrearIncidenciaForm">
             </form>
+            <div id="incidenciaCreada"></div>
         </div>
 
         <div id="formUser" class="seccion" style="display: none;">
@@ -47,20 +46,14 @@
                 <label for="correo">CORREO:</label><br>
                 <input type="text" id="correo" name="email"><br>
 
-                <input type="button" value="CREAR" id="">
+                <input type="button" value="CREAR" id="botonCrearUserForm">
             </form>
+            <div id="usuarioCreado"></div>
         </div>
 
         <div id="tablaIncidencias-container" class="seccion" style="display: none;">
             <table border="1" id="tablaIncidencias">
-                <tr>
-                    <th>ID_INCIDENCIA</th>
-                    <th>DESCRIPCION</th>
-                    <th>ESTADO</th>
-                    <th>ID_USUARIO</th>
-                    <th>NOMBRE_USUARIO</th>
-                    <th>EMAIL</th>
-                </tr>
+             
             </table>
         </div>
 
@@ -78,9 +71,10 @@
             <form action="">
                 <label for="id">ID:</label><br>
                 <input type="text" id="idIncidencia" name="id"><br>
-            
+
                 <input type="button" value="BUSCAR" id="botonBuscarIncidenciaForm">
             </form>
+            <table border = "2" id="tablaBusqueda"></table>
         </div>
 
 
