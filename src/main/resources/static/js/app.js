@@ -9,7 +9,11 @@ botonMenuAltaIncidencia.addEventListener("click", () => {
 })
 
 let botonMenuAltaUser = document.getElementById("botonMenuAltaUser");
-botonMenuAltaUser.addEventListener("click", () => mostrarSeccion("formUser"));
+botonMenuAltaUser.addEventListener("click", () => {
+    mostrarSeccion("formUser")
+    let fila = document.getElementById("usuarioCreado");
+    fila.innerHTML = "";
+});
 
 let botonMenuListaIncidencias = document.getElementById("botonMenuListaIncidencias");
 botonMenuListaIncidencias.addEventListener("click", () => mostrarSeccion("tablaIncidencias-container"));
@@ -21,6 +25,33 @@ let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidenc
 botonMenuBuscarIncidencia.addEventListener("click", () => {
     mostrarSeccion("seccionBuscarIncidencia")
     resetTablaBusqueda();
+});
+
+
+//codi per desplegable de tables
+document.addEventListener("click", (e) => {
+  const toggle = e.target.closest(".acciones__toggle");
+  const item = e.target.closest(".acciones__item");
+
+  
+  if (item) {
+    const dd = item.closest(".acciones");
+    dd?.classList.remove("open");
+    return;
+  }
+
+  if (toggle) {
+    const dd = toggle.closest(".acciones");
+
+    document.querySelectorAll(".acciones.open").forEach((x) => {
+      if (x !== dd) x.classList.remove("open");
+    });
+
+    dd.classList.toggle("open");
+    return;
+  }
+
+  document.querySelectorAll(".acciones.open").forEach((x) => x.classList.remove("open"));
 });
 
 
@@ -72,16 +103,18 @@ function loadTablaIncidencias(datos) {
 
     let incidencias = datos;
     let tabla = document.getElementById("tablaIncidencias");
-    tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th></tr>`;
+    tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
     if (!Array.isArray(incidencias)) {
         let fila = document.createElement("tr");
         fila.innerHTML = `<td>${incidencias.id}</td><td>${incidencias.descripcion}</td><td>${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
+        fila.appendChild(crearDesplegableAcciones(incidencias.id, "incidencia"))
         tabla.appendChild(fila);
     }
     else {
         for (let incidencia of incidencias) {
             let fila = document.createElement("tr");
             fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
+            fila.appendChild(crearDesplegableAcciones(incidencia.id, "incidencia"))
             tabla.appendChild(fila);
         }
     }
@@ -111,7 +144,7 @@ async function handlerGetIncidenciaById() {
 
     try {
         const incidencia = await getIncidenciasById(id);
-        
+
         if (!incidencia || Object.keys(incidencia).length === 0) {
             alert("INCIDENCIA NO ENCONTRADA");
             return;
@@ -185,47 +218,7 @@ async function handlerDeleteIncidenciaClick() {
 }
 
 
-async function handlerCrearUserClick() {
 
-    let input = document.getElementById("nombre");
-    let nombre = input.value;
-
-    input = document.getElementById("correo");
-    let correo = input.value;
-
-
-    if (nombre.length === 0) {
-        alert("NOMBRE OBLIGATORIO");
-        return;
-    }
-    if (correo.length === 0) {
-        alert("EMAIL OBLIGATORIO");
-        return;
-    }
-
-    let user = {
-        nom: nombre,
-        email: correo
-    }
-
-    let fila = document.getElementById("usuarioCreado");
-
-    try {
-        const res = await crearUser(user);
-        fila.innerHTML = `<b>USUARIO CREADO CORRECTAMENTE<br>
-            <b><br>
-            <b>ID:</b> ${res.id} <br>
-            <b>NOMBRE:</b> ${res.nom} <br>
-            <b>EMAIL:</b> ${res.email}
-        `;
-
-
-    } catch (error) {
-        alert("Error creando incidencia");
-    }
-
-
-}
 
 
 
@@ -271,16 +264,23 @@ function loadTablaBusqueda(incidencia) {
 
 //Users
 
-function mostrarEnTablaUsers(datos) {
+function loadTablaUsers(datos) {
+
     let users = datos;
     let tabla = document.getElementById("tablaUsers");
-    tabla.innerHTML = "";
-    for (let user of users) {
+    tabla.innerHTML = `<tr><th>ID</th><th>NOMBRE</th><th>EMAIL</th></tr>`;
+    if (!Array.isArray(users)) {
         let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${user.id}</td><td>${user.nom}</td><td>${user.email}</td>`
+        fila.innerHTML = `<td>${users.id}</td><td>${users.nom}</td><td>${users.email}</td>`
         tabla.appendChild(fila);
     }
-
+    else {
+        for (let user of users) {
+            let fila = document.createElement("tr");
+            fila.innerHTML = `<td>${user.id}</td><td>${user.nom}</td><td>${user.email}</td>`
+            tabla.appendChild(fila);
+        }
+    }
 }
 
 
@@ -303,13 +303,92 @@ async function cargarUsersSelect() {
 
 }
 
+async function handlerCrearUserClick() {
+
+    let input = document.getElementById("nombre");
+    let nombre = input.value;
+
+    input = document.getElementById("correo");
+    let correo = input.value;
+
+
+    if (nombre.length === 0) {
+        alert("NOMBRE OBLIGATORIO");
+        return;
+    }
+    if (correo.length === 0) {
+        alert("EMAIL OBLIGATORIO");
+        return;
+    }
+
+    let user = {
+        nom: nombre,
+        email: correo
+    }
+
+    let fila = document.getElementById("usuarioCreado");
+
+    try {
+        const res = await crearUser(user);
+        fila.innerHTML = `<b>USUARIO CREADO CORRECTAMENTE<br>
+            <b><br>
+            <b>ID:</b> ${res.id} <br>
+            <b>NOMBRE:</b> ${res.nom} <br>
+            <b>EMAIL:</b> ${res.email}
+        `;
+
+
+    } catch (error) {
+        alert("Error creando Usuario");
+    }
+
+
+}
+
 
 
 
 
 async function handlerGetAllUsersClick() {
-    const datos = await getAllUsers();
-    mostrarEnTablaUsers(datos);
+    try {
+        const datos = await getAllUsers();
+        loadTablaUsers(datos);
+    }
+    catch (error) {
+        alert("Error al cargar users");
+    }
+
+}
+
+
+//Drop down menu
+
+function crearDesplegableAcciones(id, tipo) {
+
+    const td = document.createElement("td");
+    td.className = "col-accions";
+
+    td.innerHTML = `
+    <div class="acciones" data-id="${id}" data-tipo="${tipo}">
+      <button type="button" class="acciones__toggle" aria-haspopup="menu">
+        Accions
+      </button>
+
+      <div class="acciones__menu" role="menu">
+        <button type="button" class="acciones__item acciones__item--edit" role="menuitem">
+          Modificar
+        </button>
+
+        <div class="acciones__sep" role="separator"></div>
+
+        <button type="button" class="acciones__item acciones__item--delete" role="menuitem">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  `;
+
+    return td;
 }
 
 
