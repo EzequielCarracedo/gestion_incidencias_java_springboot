@@ -54,6 +54,25 @@ async function crearIncidencia(descripcionNova, usuario) {
     }
 }
 
+async function updateIncidencia(params) {
+     try {
+        const res = await fetch(API_INCIDENCIAS, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: params.id, descripcion: params.descripcion, user: usuario })
+        });
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}`);
+        }
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("Error al crear incidencia:", error);
+        throw error;
+    }
+}
+
 
 
 

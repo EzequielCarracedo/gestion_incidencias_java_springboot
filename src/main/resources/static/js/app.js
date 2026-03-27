@@ -1,5 +1,5 @@
 
-//Menu
+//Menu Incidencia alta
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
 botonMenuAltaIncidencia.addEventListener("click", () => {
     mostrarSeccion("formIncidencia")
@@ -8,6 +8,49 @@ botonMenuAltaIncidencia.addEventListener("click", () => {
     cargarUsersSelect()
 })
 
+//Crear incicencia form
+let botonCrearIncidenciaForm = document.getElementById("botonCrearIncidenciaForm");
+botonCrearIncidenciaForm.addEventListener("click", () => handlerCrearIncidenciaClick());
+
+//Lista menu
+let botonMenuListaIncidencias = document.getElementById("botonMenuListaIncidencias");
+botonMenuListaIncidencias.addEventListener("click", () => mostrarSeccion("tablaIncidencias-container"));
+
+//Buscar menu
+let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidencia");
+botonMenuBuscarIncidencia.addEventListener("click", () => {
+    mostrarSeccion("seccionBuscarIncidencia")
+    resetTablaBusqueda();
+});
+
+//Buscar incidencia form
+let botonBuscarIncidenciaForm = document.getElementById("botonBuscarIncidenciaForm");
+botonBuscarIncidenciaForm.addEventListener("click", () => {
+    handlerGetIncidenciaById()
+});
+
+
+//UPDATE INCIDENCIA
+let botonUpdateIncidenciaTable = document.getElementById("tablaIncidencias");
+botonUpdateIncidenciaTable.addEventListener("click", (e) => {
+    const btnGuardar = e.target.closest(".acciones__item--edit");
+    const btnCancelar = e.target.closest(".acciones__item--delete");
+
+    if (!btnGuardar && !btnCancelar) return;
+
+    const cont = e.target.closest(".acciones");
+    const id = cont.dataset.id;
+    crearDesplegableModificar();
+
+    handlerUpdateIncidenciaClick(id);
+});
+
+
+
+
+//Menu users
+
+//Alta
 let botonMenuAltaUser = document.getElementById("botonMenuAltaUser");
 botonMenuAltaUser.addEventListener("click", () => {
     mostrarSeccion("formUser")
@@ -15,66 +58,42 @@ botonMenuAltaUser.addEventListener("click", () => {
     fila.innerHTML = "";
 });
 
-let botonMenuListaIncidencias = document.getElementById("botonMenuListaIncidencias");
-botonMenuListaIncidencias.addEventListener("click", () => mostrarSeccion("tablaIncidencias-container"));
 
+//Crear user form
+let botonCrearUserForm = document.getElementById("botonCrearUserForm");
+botonCrearUserForm.addEventListener("click", () => handlerCrearUserClick());
+
+//Lista
 let botonMenuListaUsers = document.getElementById("botonMenuListaUsers");
 botonMenuListaUsers.addEventListener("click", () => mostrarSeccion("tablaUsers-container"));
 
-let botonMenuBuscarIncidencia = document.getElementById("botonMenuBuscarIncidencia");
-botonMenuBuscarIncidencia.addEventListener("click", () => {
-    mostrarSeccion("seccionBuscarIncidencia")
-    resetTablaBusqueda();
-});
 
 
 //codi per desplegable de tables
 document.addEventListener("click", (e) => {
-  const toggle = e.target.closest(".acciones__toggle");
-  const item = e.target.closest(".acciones__item");
+    const toggle = e.target.closest(".acciones__toggle");
+    const item = e.target.closest(".acciones__item");
 
-  
-  if (item) {
-    const dd = item.closest(".acciones");
-    dd?.classList.remove("open");
-    return;
-  }
 
-  if (toggle) {
-    const dd = toggle.closest(".acciones");
+    if (item) {
+        const dd = item.closest(".acciones");
+        dd?.classList.remove("open");
+        return;
+    }
 
-    document.querySelectorAll(".acciones.open").forEach((x) => {
-      if (x !== dd) x.classList.remove("open");
-    });
+    if (toggle) {
+        const dd = toggle.closest(".acciones");
 
-    dd.classList.toggle("open");
-    return;
-  }
+        document.querySelectorAll(".acciones.open").forEach((x) => {
+            if (x !== dd) x.classList.remove("open");
+        });
 
-  document.querySelectorAll(".acciones.open").forEach((x) => x.classList.remove("open"));
+        dd.classList.toggle("open");
+        return;
+    }
+
+    document.querySelectorAll(".acciones.open").forEach((x) => x.classList.remove("open"));
 });
-
-
-
-//Secciones
-
-//Buscar incidencia
-let botonBuscarIncidenciaForm = document.getElementById("botonBuscarIncidenciaForm");
-botonBuscarIncidenciaForm.addEventListener("click", () => {
-    handlerGetIncidenciaById()
-});
-
-//Crear incicencia 
-let botonCrearIncidenciaForm = document.getElementById("botonCrearIncidenciaForm");
-botonCrearIncidenciaForm.addEventListener("click", () => handlerCrearIncidenciaClick());
-
-
-
-//Crear user
-let botonCrearUserForm = document.getElementById("botonCrearUserForm");
-botonCrearUserForm.addEventListener("click", () => handlerCrearUserClick());
-
-
 
 
 
@@ -201,16 +220,42 @@ async function handlerCrearIncidenciaClick() {
 
 }
 
-async function handlerGetUserId(id) {
 
-    const user = await getUserId(id);
 
-    return user;
+
+async function handlerUpdateIncidenciaClick(id, type) {
+    try {
+        let incidencia = await getIncidenciasById(id);
+        loadTablaIncidenciasModificar(incidencia);
+    }
+    catch {
+        alert("ERROR AL CARGAR INCIDENCIA");
+    }
+
+
 }
 
 
-async function handlerUpdateIncidenciaClick() {
 
+function loadTablaIncidenciasModificar(datos) {
+
+    let incidencias = datos;
+    let tabla = document.getElementById("tablaIncidencias");
+    tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
+    if (!Array.isArray(incidencias)) {
+        let fila = document.createElement("tr");
+        fila.innerHTML = `<td>${incidencias.id}</td><td>${incidencias.descripcion}</td><td>${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
+        fila.appendChild(crearDesplegableModificar(incidencias.id, "incidencia"))
+        tabla.appendChild(fila);
+    }
+    else {
+        for (let incidencia of incidencias) {
+            let fila = document.createElement("tr");
+            fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
+            fila.appendChild(crearDesplegableModificar(incidencia.id, "incidencia"))
+            tabla.appendChild(fila);
+        }
+    }
 }
 
 async function handlerDeleteIncidenciaClick() {
@@ -229,6 +274,7 @@ function resetTablaBusqueda() {
 
     tabla.innerHTML = "";
 }
+
 
 function loadTablaBusqueda(incidencia) {
 
@@ -262,26 +308,29 @@ function loadTablaBusqueda(incidencia) {
 
 
 
-//Users
+//USERS
 
 function loadTablaUsers(datos) {
 
     let users = datos;
     let tabla = document.getElementById("tablaUsers");
-    tabla.innerHTML = `<tr><th>ID</th><th>NOMBRE</th><th>EMAIL</th></tr>`;
+    tabla.innerHTML = `<tr><th>ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
     if (!Array.isArray(users)) {
         let fila = document.createElement("tr");
         fila.innerHTML = `<td>${users.id}</td><td>${users.nom}</td><td>${users.email}</td>`
+        fila.appendChild(crearDesplegableAcciones(users.id, "user"))
         tabla.appendChild(fila);
     }
     else {
         for (let user of users) {
             let fila = document.createElement("tr");
             fila.innerHTML = `<td>${user.id}</td><td>${user.nom}</td><td>${user.email}</td>`
+            fila.appendChild(crearDesplegableAcciones(users.id, "user"))
             tabla.appendChild(fila);
         }
     }
 }
+
 
 
 
@@ -345,9 +394,7 @@ async function handlerCrearUserClick() {
 
 }
 
-
-
-
+//<td><input value="text"></td>
 
 async function handlerGetAllUsersClick() {
     try {
@@ -359,6 +406,21 @@ async function handlerGetAllUsersClick() {
     }
 
 }
+
+
+//FER
+async function handlerGetUserId() {
+
+    const user = await getUserId(id);
+
+    return user;
+}
+
+
+
+
+
+
 
 
 //Drop down menu
@@ -375,7 +437,7 @@ function crearDesplegableAcciones(id, tipo) {
       </button>
 
       <div class="acciones__menu" role="menu">
-        <button type="button" class="acciones__item acciones__item--edit" role="menuitem">
+        <button type="button"  class="acciones__item acciones__item--edit" role="menuitem">
           Modificar
         </button>
 
@@ -383,6 +445,36 @@ function crearDesplegableAcciones(id, tipo) {
 
         <button type="button" class="acciones__item acciones__item--delete" role="menuitem">
           Eliminar
+        </button>
+      </div>
+    </div>
+  `;
+
+    return td;
+}
+
+
+
+function crearDesplegableModificar(id, tipo) {
+
+    const td = document.createElement("td");
+    td.className = "col-accions";
+
+    td.innerHTML = `
+    <div class="acciones" data-id="${id}" data-tipo="${tipo}">
+      <button type="button" class="acciones__toggle" aria-haspopup="menu">
+        Accions
+      </button>
+
+      <div class="acciones__menu" role="menu">
+        <button type="button" class="acciones__item acciones__item--edit" role="menuitem">
+          Guardar
+        </button>
+
+        <div class="acciones__sep" role="separator"></div>
+
+        <button  type="button" class="acciones__item acciones__item--delete" role="menuitem">
+          Cancelar
         </button>
       </div>
     </div>
