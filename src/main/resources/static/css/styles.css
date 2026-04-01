@@ -262,3 +262,18 @@ th.col-accions, td.col-accions{
 @media (max-width:520px){
   #contMenu{ grid-template-columns:1fr; }
 }
+
+
+.acciones__item--save{
+  color: rgba(52,211,153,.95);
+}
+
+.acciones__item--cancel{
+  color: rgba(251,113,133,.95);
+}
+
+.acciones__item--cancel:hover,
+.acciones__item--cancel:focus-visible{
+  background: rgba(251,113,133,.12);
+  border-color: rgba(251,113,133,.22);
+}

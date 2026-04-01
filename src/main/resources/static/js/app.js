@@ -12,7 +12,7 @@ botonMenuAltaIncidencia.addEventListener("click", () => {
 let botonCrearIncidenciaForm = document.getElementById("botonCrearIncidenciaForm");
 botonCrearIncidenciaForm.addEventListener("click", () => handlerCrearIncidenciaClick());
 
-//Lista menu
+//Lista all incidencias
 let botonMenuListaIncidencias = document.getElementById("botonMenuListaIncidencias");
 botonMenuListaIncidencias.addEventListener("click", () => mostrarSeccion("tablaIncidencias-container"));
 
@@ -33,18 +33,20 @@ botonBuscarIncidenciaForm.addEventListener("click", () => {
 //UPDATE INCIDENCIA
 let botonUpdateIncidenciaTable = document.getElementById("tablaIncidencias");
 botonUpdateIncidenciaTable.addEventListener("click", (e) => {
-    const btnGuardar = e.target.closest(".acciones__item--edit");
-    const btnCancelar = e.target.closest(".acciones__item--delete");
+    const btnEditar = e.target.closest(".acciones__item--edit");
 
-    if (!btnGuardar && !btnCancelar) return;
+
+    if (!btnEditar) return;
 
     const cont = e.target.closest(".acciones");
     const id = cont.dataset.id;
-    crearDesplegableModificar();
+    const tipo = cont.dataset.tipo;
 
-    handlerUpdateIncidenciaClick(id);
+    const tdAccions = btnEditar.closest("td.col-accions");
+    tdAccions.replaceWith(crearDesplegableModificar(id, tipo));
+
+    handlerUpdateIncidenciaClick(id, cont);
 });
-
 
 
 
@@ -74,9 +76,10 @@ document.addEventListener("click", (e) => {
     const toggle = e.target.closest(".acciones__toggle");
     const item = e.target.closest(".acciones__item");
 
-
     if (item) {
+        //closest busca el primer element que cumpleixi el selector
         const dd = item.closest(".acciones");
+        //elimina open de la class
         dd?.classList.remove("open");
         return;
     }
@@ -125,14 +128,14 @@ function loadTablaIncidencias(datos) {
     tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
     if (!Array.isArray(incidencias)) {
         let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${incidencias.id}</td><td>${incidencias.descripcion}</td><td>${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
+        fila.innerHTML = `<td>${incidencias.id}</td><td id ="descripcionModificar${incidencias.id}">${incidencias.descripcion}</td><td id = "estadoModificar${incidencias.id}">${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
         fila.appendChild(crearDesplegableAcciones(incidencias.id, "incidencia"))
         tabla.appendChild(fila);
     }
     else {
         for (let incidencia of incidencias) {
             let fila = document.createElement("tr");
-            fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
+            fila.innerHTML = `<td>${incidencia.id}</td><td id ="descripcionModificar${incidencia.id}">${incidencia.descripcion}</td><td id = "estadoModificar${incidencia.id}">${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
             fila.appendChild(crearDesplegableAcciones(incidencia.id, "incidencia"))
             tabla.appendChild(fila);
         }
@@ -223,40 +226,19 @@ async function handlerCrearIncidenciaClick() {
 
 
 
-async function handlerUpdateIncidenciaClick(id, type) {
-    try {
-        let incidencia = await getIncidenciasById(id);
-        loadTablaIncidenciasModificar(incidencia);
-    }
-    catch {
-        alert("ERROR AL CARGAR INCIDENCIA");
-    }
-
+async function handlerUpdateIncidenciaClick(id, cont) {
+    let descripcion = document.getElementById(`descripcionModificar${id}`);
+    let estat = document.getElementById(`estadoModificar${id}`)
+    descripcion.outerHTML = `<td><input type="text"></input></td>`
+    estat.outerHTML = `<td><select>
+                            <option>ABIERTA</option>
+                        </select></td>`
 
 }
 
 
 
-function loadTablaIncidenciasModificar(datos) {
 
-    let incidencias = datos;
-    let tabla = document.getElementById("tablaIncidencias");
-    tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
-    if (!Array.isArray(incidencias)) {
-        let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${incidencias.id}</td><td>${incidencias.descripcion}</td><td>${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
-        fila.appendChild(crearDesplegableModificar(incidencias.id, "incidencia"))
-        tabla.appendChild(fila);
-    }
-    else {
-        for (let incidencia of incidencias) {
-            let fila = document.createElement("tr");
-            fila.innerHTML = `<td>${incidencia.id}</td><td>${incidencia.descripcion}</td><td>${incidencia.estado}</td><td>${incidencia.user.id}</td><td>${incidencia.user.nom}</td><td>${incidencia.user.email}</td>`
-            fila.appendChild(crearDesplegableModificar(incidencia.id, "incidencia"))
-            tabla.appendChild(fila);
-        }
-    }
-}
 
 async function handlerDeleteIncidenciaClick() {
 
@@ -458,6 +440,7 @@ function crearDesplegableAcciones(id, tipo) {
 function crearDesplegableModificar(id, tipo) {
 
     const td = document.createElement("td");
+
     td.className = "col-accions";
 
     td.innerHTML = `
@@ -467,13 +450,13 @@ function crearDesplegableModificar(id, tipo) {
       </button>
 
       <div class="acciones__menu" role="menu">
-        <button type="button" class="acciones__item acciones__item--edit" role="menuitem">
+        <button type="button" class="acciones__item acciones__item--save" role="menuitem">
           Guardar
         </button>
 
         <div class="acciones__sep" role="separator"></div>
 
-        <button  type="button" class="acciones__item acciones__item--delete" role="menuitem">
+        <button  type="button" class="acciones__item acciones__item--cancel" role="menuitem">
           Cancelar
         </button>
       </div>
