@@ -230,9 +230,16 @@ async function handlerUpdateIncidenciaClick(id, cont) {
     let descripcion = document.getElementById(`descripcionModificar${id}`);
     let estat = document.getElementById(`estadoModificar${id}`)
     descripcion.outerHTML = `<td><input type="text"></input></td>`
+    let estatValor = estat.value;
     estat.outerHTML = `<td><select>
                             <option>ABIERTA</option>
+                            <option>EN PROCESO</option>
+                            <option>CERRADA</option>
                         </select></td>`
+
+}
+
+function crearDesplegableEstado(estado){
 
 }
 
@@ -397,8 +404,6 @@ async function handlerGetUserId() {
 
     return user;
 }
-
-
 
 
 
