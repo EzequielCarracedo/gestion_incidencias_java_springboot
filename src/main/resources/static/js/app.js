@@ -1,4 +1,14 @@
 
+
+
+//PENDENT REVISAR VALIDATION GLOBAL HANDLER DE SPRING BOOT PER QUE ENVII CORRECTAMENT EL MISSATGE DE EXCEPTION.
+//validar logitud descripcion nova en front(limitar de alguna manera)
+
+
+
+
+
+
 //Menu Incidencia alta
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
 botonMenuAltaIncidencia.addEventListener("click", () => {
@@ -230,18 +240,31 @@ async function handlerUpdateIncidenciaClick(id, cont) {
     let descripcion = document.getElementById(`descripcionModificar${id}`);
     let estat = document.getElementById(`estadoModificar${id}`)
     descripcion.outerHTML = `<td><input type="text"></input></td>`
-    let estatValor = estat.value;
-    estat.outerHTML = `<td><select>
-                            <option>ABIERTA</option>
-                            <option>EN PROCESO</option>
-                            <option>CERRADA</option>
+    let estatValor = estat.textContent;
+    estat.outerHTML = crearDesplegableEstado(estatValor);
+
+}
+
+function crearDesplegableEstado(estado) {
+    if (estado === "ABIERTA") {
+        return `<td><select>
+                            <option value ="ABIERTA">ABIERTA</option>
+                            <option value = "EN_PROCESO">EN PROCESO</option>
                         </select></td>`
-
+    }
+    if (estado === "EN PROCESO") {
+        return `<td><select>
+                            <option value = "EN_PROCESO">EN PROCESO</option>
+                            <option value = "CERRADA">CERRADA</option>
+                        </select></td>`
+    }
+    if (estado === "CERRADA") {
+        return `<td><select>
+                            <option value = "CERRADA">CERRADA</option>
+                        </select></td>`
+    }
 }
 
-function crearDesplegableEstado(estado){
-
-}
 
 
 
@@ -377,7 +400,7 @@ async function handlerCrearUserClick() {
 
 
     } catch (error) {
-        alert("Error creando Usuario");
+        alert(error);
     }
 
 

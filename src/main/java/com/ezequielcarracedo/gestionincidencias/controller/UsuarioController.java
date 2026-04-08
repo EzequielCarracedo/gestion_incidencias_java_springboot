@@ -9,6 +9,8 @@ import com.ezequielcarracedo.gestionincidencias.model.Usuario;
 
 import com.ezequielcarracedo.gestionincidencias.service.UsuarioService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -68,7 +70,7 @@ public class UsuarioController {
 
     // Crear usuario
     @PostMapping()
-    public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> crearUsuario(@RequestBody @Valid Usuario usuario) {
         try {
             Usuario userNou = usuarioService.crearUsuario(usuario);
             return ResponseEntity.status(HttpStatus.CREATED).body(userNou);

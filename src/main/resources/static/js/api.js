@@ -35,7 +35,7 @@ async function getIncidenciasById(id) {
 
 
 async function crearIncidencia(descripcionNova, usuario) {
-   
+
     try {
         const res = await fetch(API_INCIDENCIAS, {
             method: 'POST',
@@ -55,7 +55,7 @@ async function crearIncidencia(descripcionNova, usuario) {
 }
 
 async function updateIncidencia(params) {
-     try {
+    try {
         const res = await fetch(API_INCIDENCIAS, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -110,17 +110,26 @@ async function getUserId(id) {
 
 
 async function crearUser(usuario) {
-     try {
+    try {
         const res = await fetch(API_USERS, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nom: usuario.nom, email: usuario.email })
         });
+
+        const data = await res.json();
+        console.log("STATUS:", res.status);
+        console.log("DATA:", data);
+
         if (!res.ok) {
-            throw new Error(`Error HTTP ${res.status}`);
+            const msg =
+                data.message ||
+                data.errors?.[0]?.defaultMessage ||
+                "Error creando Usuario";
+            throw new Error(msg);
         }
 
-        return await res.json();
+        return data;
 
     } catch (error) {
         console.error("ERROR AL CREAR USUARIO:", error);
