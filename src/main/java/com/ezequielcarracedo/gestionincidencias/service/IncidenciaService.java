@@ -32,7 +32,6 @@ public class IncidenciaService {
     public Incidencia crearIncidencia(Incidencia incidencia,  int id) {
         incidencia.setId(contadorIncidencia.getAndIncrement());
         Usuario user = usuarioService.buscarPorId(id);
-     //   Usuario userr = usuarioService.crearUsuario(usuario);
         incidencia.setUser(user);
         llistatIncidencies.add(incidencia);
         return incidencia;

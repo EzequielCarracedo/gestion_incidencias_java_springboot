@@ -3,6 +3,7 @@ package com.ezequielcarracedo.gestionincidencias.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoCreadoException;
 import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoEncontradoException;
 
 import com.ezequielcarracedo.gestionincidencias.model.Usuario;
@@ -35,63 +36,41 @@ public class UsuarioController {
     // Listar todas las incidencias
     @GetMapping()
     public ResponseEntity<?> getAllUsuarios() throws UsuarioNoEncontradoException {
-        List<Usuario> llistatUsuaris;
-        try {
-            llistatUsuaris = usuarioService.listarUsuarios();
-            return ResponseEntity.ok(llistatUsuaris);
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.status(404).body("NO HAY USUARIOS");
-        }
+
+        return ResponseEntity.ok(usuarioService.listarUsuarios());
+
     }
 
     // Listar por id
     @GetMapping("/{id}")
     public ResponseEntity<?> getUsuario(@PathVariable int id) throws UsuarioNoEncontradoException {
-        Usuario usuario = new Usuario();
-        try {
-            usuario = usuarioService.buscarPorId(id);
-            return ResponseEntity.ok(usuario);
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.status(404).body("USUARIO CON ID: " + id + " NO ENCONTRADO");
-        }
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable int id) {
         Usuario usuario = new Usuario();
-        try {
-            usuario = usuarioService.buscarPorId(id);
-            usuarioService.eliminarUsuario(usuario);
-            return ResponseEntity.status(204).body("USUARIO BORRADO CORRECTAMENTE");
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.status(404).body("USUARIO CON ID: " + id + " NO ENCONTRADO");
-        }
+        usuario = usuarioService.buscarPorId(id);
+        usuarioService.eliminarUsuario(usuario);
+
+        return ResponseEntity.noContent().build();
     }
 
     // Crear usuario
     @PostMapping()
     public ResponseEntity<?> crearUsuario(@RequestBody @Valid Usuario usuario) {
-        try {
-            Usuario userNou = usuarioService.crearUsuario(usuario);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userNou);
 
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
+        usuarioService.crearUsuario(usuario);
+
+        return ResponseEntity.ok(usuario);
 
     }
 
     // Modificar
     @PutMapping("/{id}")
-    public ResponseEntity<?> modificarUsuario(@PathVariable int id, @RequestBody Usuario usuarioModificado) {
-        Usuario usuario = new Usuario();
-        try {
-            usuario = usuarioService.actualizarUsuario(usuarioModificado, id);
+    public ResponseEntity<?> modificarUsuario(@PathVariable int id, @RequestBody @Valid Usuario usuarioModificado) {
 
-            return ResponseEntity.ok(usuario);
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.status(404).body("USUARIO CON ID: " + id + " NO ENCONTRADO");
-        }
+        return ResponseEntity.ok(usuarioService.actualizarUsuario(usuarioModificado, id));
 
     }
 
