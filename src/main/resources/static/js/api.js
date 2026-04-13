@@ -42,8 +42,15 @@ async function crearIncidencia(descripcionNova, usuario) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ descripcion: descripcionNova, user: usuario })
         });
+        const data = await res.json();
+        console.log("STATUS:", res.status);
+        console.log("DATA:", data);
         if (!res.ok) {
-            throw new Error(`Error HTTP ${res.status}`);
+            const msg =
+                data.message ||
+                data.errors?.[0]?.defaultMessage ||
+                "Error creando Incidencia";
+            throw new Error(msg);
         }
 
         return await res.json();
@@ -54,15 +61,17 @@ async function crearIncidencia(descripcionNova, usuario) {
     }
 }
 
-async function updateIncidencia(params) {
+async function updateIncidencia(id, descripcion, estado) {
     try {
-        const res = await fetch(API_INCIDENCIAS, {
+        const res = await fetch(`${API_INCIDENCIAS}/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: params.id, descripcion: params.descripcion, user: usuario })
+            headers: { 'Content-Type': 'application/json' 
+
+            },
+            body: JSON.stringify({ descripcion, estado })
         });
         if (!res.ok) {
-            throw new Error(`Error HTTP ${res.status}`);
+            throw new Error(`Error HTTP ${res.status}, ${res.message}`);
         }
 
         return await res.json();

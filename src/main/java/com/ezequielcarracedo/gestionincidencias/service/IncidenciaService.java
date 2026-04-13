@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ezequielcarracedo.gestionincidencias.exception.IncidenciaNoEncontradaException;
@@ -29,7 +30,7 @@ public class IncidenciaService {
         llistatIncidencies.add(incidencia);
     }
 
-    public Incidencia crearIncidencia(Incidencia incidencia,  int id) {
+    public Incidencia crearIncidencia(Incidencia incidencia, int id) {
         incidencia.setId(contadorIncidencia.getAndIncrement());
         Usuario user = usuarioService.buscarPorId(id);
         incidencia.setUser(user);
@@ -79,9 +80,11 @@ public class IncidenciaService {
     }
 
     public Incidencia actualizarIncidencia(Incidencia incidenciaNova, int id) {
-        if (llistatIncidencies.size() == 0) {
+
+        if (llistatIncidencies == null || llistatIncidencies.isEmpty()) {
             throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
         }
+        
         for (int it = 0; it < llistatIncidencies.size(); it++) {
             if (llistatIncidencies.get(it).getId() == id) {
                 llistatIncidencies.get(it).setDescripcion(incidenciaNova.getDescripcion());
@@ -90,6 +93,6 @@ public class IncidenciaService {
             }
         }
 
-        throw new IncidenciaNoEncontradaException("NO EXISTE NINGUNA INCIDENCIA CON EL ID: " + incidenciaNova.getId());
+        throw new IncidenciaNoEncontradaException("NO EXISTE NINGUNA INCIDENCIA CON EL ID: " + id);
     }
 }

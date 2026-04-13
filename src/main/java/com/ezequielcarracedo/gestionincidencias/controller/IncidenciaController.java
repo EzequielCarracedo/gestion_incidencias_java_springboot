@@ -70,7 +70,7 @@ public class IncidenciaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> modificarIncidencia(@PathVariable int id,
             @RequestBody @Valid Incidencia incidenciaModificada) {
-
+                
         return ResponseEntity.ok(incidenciaService.actualizarIncidencia(incidenciaModificada, id));
 
     }

@@ -37,25 +37,33 @@ public class GlobalExceptionHandler {
 
 
 
-        
-        // VALIDACIONS
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
-                String msg = ex.getBindingResult().getFieldErrors().stream()
-                                .findFirst()
-                                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-                                .orElse("Validació incorrecta");
 
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new ApiError(HttpStatus.BAD_REQUEST.value(), msg));
+                System.out.println("🔥 VALIDATION ERROR:");
+
+                ex.getBindingResult().getFieldErrors()
+                                .forEach(e -> System.out.println(e.getField() + " -> " + e.getDefaultMessage()));
+
+                String msg = ex.getBindingResult()
+                                .getFieldErrors()
+                                .stream()
+                                .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                                .findFirst()
+                                .orElse(ex.getMessage());
+
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(new ApiError(400, msg));
         }
 
         // Errors comuns
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ApiError> handleAny(Exception ex) {
+                ex.printStackTrace(); // 👈 IMPORTANTÍSIMO
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error intern"));
+                                .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()));
         }
 
         // JSON invalid

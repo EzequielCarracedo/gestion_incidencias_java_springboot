@@ -1,14 +1,5 @@
 
 
-
-//PENDENT REVISAR VALIDATION GLOBAL HANDLER DE SPRING BOOT PER QUE ENVII CORRECTAMENT EL MISSATGE DE EXCEPTION.
-//validar logitud descripcion nova en front(limitar de alguna manera)
-
-
-
-
-
-
 //Menu Incidencia alta
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
 botonMenuAltaIncidencia.addEventListener("click", () => {
@@ -43,21 +34,60 @@ botonBuscarIncidenciaForm.addEventListener("click", () => {
 //UPDATE INCIDENCIA
 let botonUpdateIncidenciaTable = document.getElementById("tablaIncidencias");
 botonUpdateIncidenciaTable.addEventListener("click", (e) => {
+
     const btnEditar = e.target.closest(".acciones__item--edit");
+    const btnEliminar = e.target.closest(".acciones__item--delete");
+    const btnGuardar = e.target.closest(".acciones__item--save");
+    const btnCancelar = e.target.closest(".acciones__item--cancel");
 
 
-    if (!btnEditar) return;
+    if (btnEditar) {
+        const cont = e.target.closest(".acciones");
+        const id = cont.dataset.id;
+        const tipo = cont.dataset.tipo;
 
-    const cont = e.target.closest(".acciones");
-    const id = cont.dataset.id;
-    const tipo = cont.dataset.tipo;
+        const tdAccions = btnEditar.closest("td.col-accions");
+        tdAccions.replaceWith(crearDesplegableModificar(id, tipo));
+        loadEditableIncidencia(id);
+        return
+    }
 
-    const tdAccions = btnEditar.closest("td.col-accions");
-    tdAccions.replaceWith(crearDesplegableModificar(id, tipo));
+    if (btnGuardar) {
+        const cont = e.target.closest(".acciones");
+        let input = cont.closest("tr").querySelector(".input-nombre");
+        const descripcion = input.value;
 
-    handlerUpdateIncidenciaClick(id, cont);
+        input = cont.closest("tr").querySelector("select");
+        const estado = input.value;
+
+        const id = cont.dataset.id;
+
+
+        handlerUpdateIncidenciaClick(id, descripcion, estado);
+        return
+    }
+
+    if (btnCancelar) {
+        return
+    }
+
+    if (btnEliminar) {
+        return
+    }
+
+
+
+
 });
 
+
+function loadEditableIncidencia(id,) {
+    let descripcion = document.getElementById(`descripcionModificar${id}`);
+    let estat = document.getElementById(`estadoModificar${id}`)
+    descripcion.innerHTML = `<td><input type="text" class ="input-nombre"></input></td>`
+    let estatValor = estat.textContent;
+    estat.outerHTML = crearDesplegableEstado(estatValor);
+}
 
 
 //Menu users
@@ -138,7 +168,7 @@ function loadTablaIncidencias(datos) {
     tabla.innerHTML = `<tr><th>ID</th><th>DESCRIPCION</th><th>ESTADO</th><th>USUARIO_ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
     if (!Array.isArray(incidencias)) {
         let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${incidencias.id}</td><td id ="descripcionModificar${incidencias.id}">${incidencias.descripcion}</td><td id = "estadoModificar${incidencias.id}">${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
+        fila.innerHTML = `<td id = "idFila">${incidencias.id}</td><td id ="descripcionModificar${incidencias.id}">${incidencias.descripcion}</td><td id = "estadoModificar${incidencias.id}">${incidencias.estado}</td><td>${incidencias.user.id}</td><td>${incidencias.user.nom}</td><td>${incidencias.user.email}</td>`
         fila.appendChild(crearDesplegableAcciones(incidencias.id, "incidencia"))
         tabla.appendChild(fila);
     }
@@ -227,7 +257,7 @@ async function handlerCrearIncidenciaClick() {
         `;
 
     } catch (error) {
-        alert("ERROR AL CREAR INCIDENCIA");
+        alert(error);
     }
 
 
@@ -236,12 +266,23 @@ async function handlerCrearIncidenciaClick() {
 
 
 
-async function handlerUpdateIncidenciaClick(id, cont) {
-    let descripcion = document.getElementById(`descripcionModificar${id}`);
-    let estat = document.getElementById(`estadoModificar${id}`)
-    descripcion.outerHTML = `<td><input type="text"></input></td>`
-    let estatValor = estat.textContent;
-    estat.outerHTML = crearDesplegableEstado(estatValor);
+async function handlerUpdateIncidenciaClick(id, descripcion, estado) {
+
+    try {
+        const res = await updateIncidencia(id, descripcion,estado );
+        fila.innerHTML = `<b>INCIDENCIA MODIFICADA CORRECTAMENTE<br>
+            <b><br>
+            <b>ID:</b> ${res.id} <br>
+            <b>Descripción:</b> ${res.descripcion} <br>
+            <b>User ID:</b> ${res.user.id} <br>
+            <b> User: </b> ${res.user.nom}
+        `;
+
+    } catch (error) {
+        alert(error.message);
+    }
+
+
 
 }
 
@@ -406,7 +447,7 @@ async function handlerCrearUserClick() {
 
 }
 
-//<td><input value="text"></td>
+
 
 async function handlerGetAllUsersClick() {
     try {
