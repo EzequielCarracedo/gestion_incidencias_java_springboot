@@ -34,13 +34,13 @@ async function getIncidenciasById(id) {
 }
 
 
-async function crearIncidencia(descripcionNova, usuario) {
+async function crearIncidencia(descripcionNova, usuarioId) {
 
     try {
         const res = await fetch(API_INCIDENCIAS, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descripcion: descripcionNova, user: usuario })
+            body: JSON.stringify({ descripcion: descripcionNova, userId: usuarioId })
         });
         const data = await res.json();
         console.log("STATUS:", res.status);
@@ -53,7 +53,7 @@ async function crearIncidencia(descripcionNova, usuario) {
             throw new Error(msg);
         }
 
-        return await res.json();
+        return data;
 
     } catch (error) {
         console.error("Error al crear incidencia:", error);

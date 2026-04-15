@@ -1,13 +1,19 @@
 package com.ezequielcarracedo.gestionincidencias.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.ezequielcarracedo.gestionincidencias.dto.incidencia.IncidenciaCreateDTO;
+import com.ezequielcarracedo.gestionincidencias.dto.incidencia.IncidenciaUpdateDTO;
 import com.ezequielcarracedo.gestionincidencias.exception.IncidenciaNoEncontradaException;
+import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoCreadoException;
+import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoEncontradoException;
 import com.ezequielcarracedo.gestionincidencias.model.EstatIncidencia;
 import com.ezequielcarracedo.gestionincidencias.model.Incidencia;
 import com.ezequielcarracedo.gestionincidencias.model.Usuario;
@@ -30,10 +36,16 @@ public class IncidenciaService {
         llistatIncidencies.add(incidencia);
     }
 
-    public Incidencia crearIncidencia(Incidencia incidencia, int id) {
+    public Incidencia crearIncidencia(IncidenciaCreateDTO incidenciaDto, int id) {
+        Incidencia incidencia = new Incidencia();
+
         incidencia.setId(contadorIncidencia.getAndIncrement());
         Usuario user = usuarioService.buscarPorId(id);
+        if (user == null) {
+            throw new UsuarioNoEncontradoException("USUARIO NO ENCONTRADO");
+        }
         incidencia.setUser(user);
+        incidencia.setDescripcion(incidenciaDto.getDescripcion());
         llistatIncidencies.add(incidencia);
         return incidencia;
     }
@@ -79,12 +91,12 @@ public class IncidenciaService {
         return incidenciesEstat;
     }
 
-    public Incidencia actualizarIncidencia(Incidencia incidenciaNova, int id) {
+    public Incidencia actualizarIncidencia(IncidenciaUpdateDTO incidenciaNova, int id) {
 
         if (llistatIncidencies == null || llistatIncidencies.isEmpty()) {
             throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
         }
-        
+
         for (int it = 0; it < llistatIncidencies.size(); it++) {
             if (llistatIncidencies.get(it).getId() == id) {
                 llistatIncidencies.get(it).setDescripcion(incidenciaNova.getDescripcion());

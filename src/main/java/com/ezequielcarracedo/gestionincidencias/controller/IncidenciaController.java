@@ -3,6 +3,8 @@ package com.ezequielcarracedo.gestionincidencias.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ezequielcarracedo.gestionincidencias.dto.incidencia.IncidenciaCreateDTO;
+import com.ezequielcarracedo.gestionincidencias.dto.incidencia.IncidenciaUpdateDTO;
 import com.ezequielcarracedo.gestionincidencias.model.EstatIncidencia;
 import com.ezequielcarracedo.gestionincidencias.model.Incidencia;
 import com.ezequielcarracedo.gestionincidencias.service.IncidenciaService;
@@ -61,15 +63,15 @@ public class IncidenciaController {
 
     // Crear incidencias
     @PostMapping()
-    public ResponseEntity<?> crearIncidencia(@RequestBody @Valid Incidencia incidencia) {
-        incidenciaService.crearIncidencia(incidencia, incidencia.getUser().getId());
-        return ResponseEntity.ok(incidencia);
+    public ResponseEntity<?> crearIncidencia(@RequestBody @Valid IncidenciaCreateDTO incidencia) {
+        
+        return ResponseEntity.ok(incidenciaService.crearIncidencia(incidencia, incidencia.getUserId()));
     }
 
     // Modificar
     @PutMapping("/{id}")
     public ResponseEntity<?> modificarIncidencia(@PathVariable int id,
-            @RequestBody @Valid Incidencia incidenciaModificada) {
+            @RequestBody @Valid IncidenciaUpdateDTO incidenciaModificada) {
                 
         return ResponseEntity.ok(incidenciaService.actualizarIncidencia(incidenciaModificada, id));
 

@@ -227,12 +227,10 @@ async function handlerCrearIncidenciaClick() {
     let descripcion = input.value;
 
     let inputUser = document.getElementById("selectUsers");
-    let user = null;
+    let idUser = 0;
     if (inputUser.selectedIndex !== -1) {
-        let idBuscar = inputUser.value;
-        user = {
-            id: idBuscar
-        }
+        idUser = inputUser.value;
+
     }
     else {
         alert("USUARIO NO SELECCIONADO");
@@ -248,7 +246,8 @@ async function handlerCrearIncidenciaClick() {
     let fila = document.getElementById("incidenciaCreada");
 
     try {
-        const res = await crearIncidencia(descripcion, user);
+        const res = await crearIncidencia(descripcion, idUser);
+        console.log(res);
         fila.innerHTML = `<b>INCIDENCIA CREADA CORRECTAMENTE<br>
             <b><br>
             <b>ID:</b> ${res.id} <br>
@@ -269,7 +268,7 @@ async function handlerCrearIncidenciaClick() {
 async function handlerUpdateIncidenciaClick(id, descripcion, estado) {
 
     try {
-        const res = await updateIncidencia(id, descripcion,estado );
+        const res = await updateIncidencia(id, descripcion, estado);
         fila.innerHTML = `<b>INCIDENCIA MODIFICADA CORRECTAMENTE<br>
             <b><br>
             <b>ID:</b> ${res.id} <br>

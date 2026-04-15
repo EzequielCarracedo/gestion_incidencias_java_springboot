@@ -22,6 +22,7 @@ public class Incidencia {
 
     // BUILDER
     public Incidencia() {
+        this.estado = EstatIncidencia.ABIERTA;
     }
 
     public Incidencia(String descripcion, Usuario user) {
