@@ -11,7 +11,6 @@ import com.ezequielcarracedo.gestionincidencias.service.IncidenciaService;
 
 import jakarta.validation.Valid;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,24 +46,31 @@ public class IncidenciaController {
     // Listar por id
     @GetMapping("/{id}")
     public ResponseEntity<?> getIncidencia(@PathVariable int id) throws Exception {
-        return ResponseEntity.ok(incidenciaService.buscarPorId(id));
+        Incidencia incidencia = incidenciaService.buscarPorId(id);
+
+        if (incidencia == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(incidencia);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarIncidencia(@PathVariable int id) {
 
-        Incidencia incidencia = new Incidencia();
-        incidencia = incidenciaService.buscarPorId(id);
-
-        incidenciaService.eliminarIncidencia(incidencia);
+        boolean eliminat = incidenciaService.eliminarIncidencia(id);
+        if (!eliminat) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.noContent().build();
+
     }
 
     // Crear incidencias
     @PostMapping()
     public ResponseEntity<?> crearIncidencia(@RequestBody @Valid IncidenciaCreateDTO incidencia) {
-        
+
         return ResponseEntity.ok(incidenciaService.crearIncidencia(incidencia, incidencia.getUserId()));
     }
 
@@ -72,7 +78,7 @@ public class IncidenciaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> modificarIncidencia(@PathVariable int id,
             @RequestBody @Valid IncidenciaUpdateDTO incidenciaModificada) {
-                
+
         return ResponseEntity.ok(incidenciaService.actualizarIncidencia(incidenciaModificada, id));
 
     }

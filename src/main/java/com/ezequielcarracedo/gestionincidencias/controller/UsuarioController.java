@@ -3,7 +3,7 @@ package com.ezequielcarracedo.gestionincidencias.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoCreadoException;
+
 import com.ezequielcarracedo.gestionincidencias.exception.UsuarioNoEncontradoException;
 
 import com.ezequielcarracedo.gestionincidencias.model.Usuario;
@@ -12,9 +12,9 @@ import com.ezequielcarracedo.gestionincidencias.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
 
-import org.springframework.http.HttpStatus;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,9 +49,10 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable int id) {
-        Usuario usuario = new Usuario();
-        usuario = usuarioService.buscarPorId(id);
-        usuarioService.eliminarUsuario(usuario);
+        boolean eliminat = usuarioService.eliminarUsuario(id);
+        if (!eliminat) {
+            return ResponseEntity.notFound().build();
+        }
 
         return ResponseEntity.noContent().build();
     }

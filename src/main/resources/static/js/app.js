@@ -47,7 +47,7 @@ botonUpdateIncidenciaTable.addEventListener("click", (e) => {
         const tipo = cont.dataset.tipo;
 
         const tdAccions = btnEditar.closest("td.col-accions");
-        tdAccions.replaceWith(crearDesplegableModificar(id, tipo));
+        tdAccions.replaceWith(crearDesplegableGuardar_Cancelar(id, tipo));
         loadEditableIncidencia(id);
         return
     }
@@ -56,12 +56,11 @@ botonUpdateIncidenciaTable.addEventListener("click", (e) => {
         const cont = e.target.closest(".acciones");
         let input = cont.closest("tr").querySelector(".input-nombre");
         const descripcion = input.value;
-
+    
         input = cont.closest("tr").querySelector("select");
         const estado = input.value;
 
         const id = cont.dataset.id;
-
 
         handlerUpdateIncidenciaClick(id, descripcion, estado);
         return
@@ -505,7 +504,7 @@ function crearDesplegableAcciones(id, tipo) {
 
 
 
-function crearDesplegableModificar(id, tipo) {
+function crearDesplegableGuardar_Cancelar(id, tipo) {
 
     const td = document.createElement("td");
 
