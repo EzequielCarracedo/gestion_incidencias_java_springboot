@@ -30,7 +30,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> listarUsuarios() {
-        if (llistatUsuarios.size() == 0) {
+        if (llistatUsuarios == null) {
             throw new UsuarioNoEncontradoException("LISTA DE USUARIOS VACIA");
         }
         return new ArrayList<>(llistatUsuarios.values());
@@ -42,7 +42,7 @@ public class UsuarioService {
 
     public Usuario buscarPorId(int id) {
 
-        if (llistatUsuarios.size() == 0 || llistatUsuarios == null) {
+        if (llistatUsuarios == null) {
             throw new UsuarioNoEncontradoException("LA LISTA ESTA VACIA");
         }
         Usuario user = llistatUsuarios.get(id);
@@ -53,7 +53,7 @@ public class UsuarioService {
     }
 
     public Usuario actualizarUsuario(Usuario usuarioNou, int id) {
-        if (llistatUsuarios.size() == 0 || llistatUsuarios == null) {
+        if (llistatUsuarios == null) {
             throw new UsuarioNoEncontradoException("LA LISTA ESTA VACIA");
         }
         for (int it = 0; it < llistatUsuarios.size(); it++) {

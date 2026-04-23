@@ -65,7 +65,8 @@ async function updateIncidencia(id, descripcion, estado) {
     try {
         const res = await fetch(`${API_INCIDENCIAS}/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' 
+            headers: {
+                'Content-Type': 'application/json'
 
             },
             body: JSON.stringify({ descripcion, estado })
@@ -78,6 +79,24 @@ async function updateIncidencia(id, descripcion, estado) {
 
     } catch (error) {
         console.error("Error al crear incidencia:", error);
+        throw error;
+    }
+}
+
+
+async function deleteIncidencia(id) {
+    try {
+        const res = await fetch(`${API_INCIDENCIAS}/${id}`, {
+            method: 'DELETE'
+        });
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}, ${res.message}`);
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error("Error al borrar:", error);
         throw error;
     }
 }

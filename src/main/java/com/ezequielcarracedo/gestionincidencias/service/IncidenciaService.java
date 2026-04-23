@@ -52,7 +52,7 @@ public class IncidenciaService {
     }
 
     public List<Incidencia> listarIncidencias() {
-        if (llistatIncidencies.size() == 0 || llistatIncidencies == null) {
+        if (llistatIncidencies == null) {
             throw new IncidenciaNoEncontradaException("LISTA DE INCIDENCIAS VACIA");
         }
         return new ArrayList<Incidencia>(llistatIncidencies.values());
@@ -64,7 +64,7 @@ public class IncidenciaService {
 
     public Incidencia buscarPorId(int id) {
 
-        if (llistatIncidencies.size() == 0 || llistatIncidencies == null) {
+        if (llistatIncidencies == null) {
             throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
         }
 
@@ -73,7 +73,7 @@ public class IncidenciaService {
     }
 
     public List<Incidencia> listarPorEstado(EstatIncidencia estado) {
-        if (llistatIncidencies.size() == 0 || llistatIncidencies == null) {
+        if (llistatIncidencies == null) {
             throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
         }
 
@@ -86,7 +86,7 @@ public class IncidenciaService {
 
     public Incidencia actualizarIncidencia(IncidenciaUpdateDTO incidenciaNova, int id) {
 
-        if (llistatIncidencies == null || llistatIncidencies.isEmpty()) {
+        if (llistatIncidencies == null) {
             throw new IncidenciaNoEncontradaException("LA LISTA ESTA VACIA");
         }
 

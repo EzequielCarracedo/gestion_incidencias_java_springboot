@@ -33,7 +33,7 @@ botonBuscarIncidenciaForm.addEventListener("click", () => {
 
 //UPDATE INCIDENCIA
 let botonUpdateIncidenciaTable = document.getElementById("tablaIncidencias");
-botonUpdateIncidenciaTable.addEventListener("click", (e) => {
+botonUpdateIncidenciaTable.addEventListener("click", async (e) => {
 
     const btnEditar = e.target.closest(".acciones__item--edit");
     const btnEliminar = e.target.closest(".acciones__item--delete");
@@ -53,39 +53,48 @@ botonUpdateIncidenciaTable.addEventListener("click", (e) => {
     }
 
     if (btnGuardar) {
-        const cont = e.target.closest(".acciones");
-        let input = cont.closest("tr").querySelector(".input-nombre");
-        const descripcion = input.value;
-    
-        input = cont.closest("tr").querySelector("select");
-        const estado = input.value;
+        if (confirm("¿Quiere confirmar los cambios?")) {
+            const cont = e.target.closest(".acciones");
+            let input = cont.closest("tr").querySelector(".input-nombre");
+            const descripcion = input.value;
 
-        const id = cont.dataset.id;
+            input = cont.closest("tr").querySelector("select");
+            const estado = input.value;
 
-        handlerUpdateIncidenciaClick(id, descripcion, estado);
+            const id = cont.dataset.id;
+
+            await handlerUpdateIncidenciaClick(id, descripcion, estado);
+        }
+        await handlerGetAllIncidenciasClick();
         return
     }
 
     if (btnCancelar) {
+        handlerGetAllIncidenciasClick();
         return
     }
 
     if (btnEliminar) {
+        const cont = e.target.closest(".acciones");
+        const id = cont.dataset.id;
+        if (confirm("¿Quiere eliminar el registro?")) {
+            await handlerDeleteIncidenciaClick(id);
+        }
+        await handlerGetAllIncidenciasClick();
+
         return
     }
-
-
 
 
 });
 
 
-function loadEditableIncidencia(id,) {
+function loadEditableIncidencia(id) {
     let descripcion = document.getElementById(`descripcionModificar${id}`);
     let estat = document.getElementById(`estadoModificar${id}`)
     descripcion.innerHTML = `<td><input type="text" class ="input-nombre"></input></td>`
     let estatValor = estat.textContent;
-    estat.outerHTML = crearDesplegableEstado(estatValor);
+    estat.outerHTML = crearDesplegableEstado(estatValor, id);
 }
 
 
@@ -268,37 +277,29 @@ async function handlerUpdateIncidenciaClick(id, descripcion, estado) {
 
     try {
         const res = await updateIncidencia(id, descripcion, estado);
-        fila.innerHTML = `<b>INCIDENCIA MODIFICADA CORRECTAMENTE<br>
-            <b><br>
-            <b>ID:</b> ${res.id} <br>
-            <b>Descripción:</b> ${res.descripcion} <br>
-            <b>User ID:</b> ${res.user.id} <br>
-            <b> User: </b> ${res.user.nom}
-        `;
+
 
     } catch (error) {
         alert(error.message);
     }
 
-
-
 }
 
-function crearDesplegableEstado(estado) {
+function crearDesplegableEstado(estado, id) {
     if (estado === "ABIERTA") {
-        return `<td><select>
+        return `<td><select id = "estadoModificar${id}">
                             <option value ="ABIERTA">ABIERTA</option>
                             <option value = "EN_PROCESO">EN PROCESO</option>
                         </select></td>`
     }
-    if (estado === "EN PROCESO") {
-        return `<td><select>
+    if (estado === "EN_PROCESO") {
+        return `<td><select id = "estadoModificar${id}">
                             <option value = "EN_PROCESO">EN PROCESO</option>
                             <option value = "CERRADA">CERRADA</option>
                         </select></td>`
     }
     if (estado === "CERRADA") {
-        return `<td><select>
+        return `<td><select id = "estadoModificar${id}">
                             <option value = "CERRADA">CERRADA</option>
                         </select></td>`
     }
@@ -309,8 +310,14 @@ function crearDesplegableEstado(estado) {
 
 
 
-async function handlerDeleteIncidenciaClick() {
+async function handlerDeleteIncidenciaClick(id) {
+    try {
+        const res = await deleteIncidencia(id);
 
+
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 
