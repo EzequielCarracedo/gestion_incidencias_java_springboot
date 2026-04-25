@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
 
-                System.out.println("🔥 VALIDATION ERROR:");
+                System.out.println("VALIDATION ERROR:");
 
                 ex.getBindingResult().getFieldErrors()
                                 .forEach(e -> System.out.println(e.getField() + " -> " + e.getDefaultMessage()));
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
         // Errors comuns
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ApiError> handleAny(Exception ex) {
-                ex.printStackTrace(); // 👈 IMPORTANTÍSIMO
+                ex.printStackTrace();
 
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()));
