@@ -89,6 +89,25 @@ botonUpdateIncidenciaTable.addEventListener("click", async (e) => {
 });
 
 
+
+//DOM DE UPDATE/DELETE
+
+
+
+
+
+async function handlerUpdateIncidenciaClick(id, descripcion, estado) {
+
+    try {
+        const res = await updateIncidencia(id, descripcion, estado);
+
+
+    } catch (error) {
+        alert(error.message);
+    }
+
+}
+
 function loadEditableIncidencia(id) {
     let descripcion = document.getElementById(`descripcionModificar${id}`);
     let estat = document.getElementById(`estadoModificar${id}`)
@@ -96,6 +115,104 @@ function loadEditableIncidencia(id) {
     let estatValor = estat.textContent;
     estat.outerHTML = crearDesplegableEstado(estatValor, id);
 }
+
+
+
+
+function crearDesplegableEstado(estado, id) {
+    if (estado === "ABIERTA") {
+        return `<td><select id = "estadoModificar${id}">
+                            <option value ="ABIERTA">ABIERTA</option>
+                            <option value = "EN_PROCESO">EN PROCESO</option>
+                        </select></td>`
+    }
+    if (estado === "EN_PROCESO") {
+        return `<td><select id = "estadoModificar${id}">
+                            <option value = "EN_PROCESO">EN PROCESO</option>
+                            <option value = "CERRADA">CERRADA</option>
+                        </select></td>`
+    }
+    if (estado === "CERRADA") {
+        return `<td><select id = "estadoModificar${id}">
+                            <option value = "CERRADA">CERRADA</option>
+                        </select></td>`
+    }
+}
+
+
+//Drop down menu
+
+function crearDesplegableAcciones(id, tipo) {
+
+    const td = document.createElement("td");
+    td.className = "col-accions";
+
+    td.innerHTML = `
+    <div class="acciones" data-id="${id}" data-tipo="${tipo}">
+      <button type="button" class="acciones__toggle" aria-haspopup="menu">
+        Accions
+      </button>
+
+      <div class="acciones__menu" role="menu">
+        <button type="button"  class="acciones__item acciones__item--edit" role="menuitem">
+          Modificar
+        </button>
+
+        <div class="acciones__sep" role="separator"></div>
+
+        <button type="button" class="acciones__item acciones__item--delete" role="menuitem">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  `;
+
+    return td;
+}
+
+
+
+function crearDesplegableGuardar_Cancelar(id, tipo) {
+
+    const td = document.createElement("td");
+
+    td.className = "col-accions";
+
+    td.innerHTML = `
+    <div class="acciones" data-id="${id}" data-tipo="${tipo}">
+      <button type="button" class="acciones__toggle" aria-haspopup="menu">
+        Accions
+      </button>
+
+      <div class="acciones__menu" role="menu">
+        <button type="button" class="acciones__item acciones__item--save" role="menuitem">
+          Guardar
+        </button>
+
+        <div class="acciones__sep" role="separator"></div>
+
+        <button  type="button" class="acciones__item acciones__item--cancel" role="menuitem">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  `;
+
+    return td;
+}
+
+
+async function handlerDeleteIncidenciaClick(id) {
+    try {
+        const res = await deleteIncidencia(id);
+
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+
 
 
 //Menu users
@@ -226,7 +343,6 @@ async function handlerGetIncidenciaById() {
         return
     }
 
-
 }
 
 async function handlerCrearIncidenciaClick() {
@@ -269,60 +385,6 @@ async function handlerCrearIncidenciaClick() {
 
 
 }
-
-
-
-
-async function handlerUpdateIncidenciaClick(id, descripcion, estado) {
-
-    try {
-        const res = await updateIncidencia(id, descripcion, estado);
-
-
-    } catch (error) {
-        alert(error.message);
-    }
-
-}
-
-function crearDesplegableEstado(estado, id) {
-    if (estado === "ABIERTA") {
-        return `<td><select id = "estadoModificar${id}">
-                            <option value ="ABIERTA">ABIERTA</option>
-                            <option value = "EN_PROCESO">EN PROCESO</option>
-                        </select></td>`
-    }
-    if (estado === "EN_PROCESO") {
-        return `<td><select id = "estadoModificar${id}">
-                            <option value = "EN_PROCESO">EN PROCESO</option>
-                            <option value = "CERRADA">CERRADA</option>
-                        </select></td>`
-    }
-    if (estado === "CERRADA") {
-        return `<td><select id = "estadoModificar${id}">
-                            <option value = "CERRADA">CERRADA</option>
-                        </select></td>`
-    }
-}
-
-
-
-
-
-
-async function handlerDeleteIncidenciaClick(id) {
-    try {
-        const res = await deleteIncidencia(id);
-
-
-    } catch (error) {
-        alert(error.message);
-    }
-}
-
-
-
-
 
 
 
@@ -479,66 +541,6 @@ async function handlerGetUserId() {
 
 
 
-//Drop down menu
-
-function crearDesplegableAcciones(id, tipo) {
-
-    const td = document.createElement("td");
-    td.className = "col-accions";
-
-    td.innerHTML = `
-    <div class="acciones" data-id="${id}" data-tipo="${tipo}">
-      <button type="button" class="acciones__toggle" aria-haspopup="menu">
-        Accions
-      </button>
-
-      <div class="acciones__menu" role="menu">
-        <button type="button"  class="acciones__item acciones__item--edit" role="menuitem">
-          Modificar
-        </button>
-
-        <div class="acciones__sep" role="separator"></div>
-
-        <button type="button" class="acciones__item acciones__item--delete" role="menuitem">
-          Eliminar
-        </button>
-      </div>
-    </div>
-  `;
-
-    return td;
-}
-
-
-
-function crearDesplegableGuardar_Cancelar(id, tipo) {
-
-    const td = document.createElement("td");
-
-    td.className = "col-accions";
-
-    td.innerHTML = `
-    <div class="acciones" data-id="${id}" data-tipo="${tipo}">
-      <button type="button" class="acciones__toggle" aria-haspopup="menu">
-        Accions
-      </button>
-
-      <div class="acciones__menu" role="menu">
-        <button type="button" class="acciones__item acciones__item--save" role="menuitem">
-          Guardar
-        </button>
-
-        <div class="acciones__sep" role="separator"></div>
-
-        <button  type="button" class="acciones__item acciones__item--cancel" role="menuitem">
-          Cancelar
-        </button>
-      </div>
-    </div>
-  `;
-
-    return td;
-}
 
 
 
