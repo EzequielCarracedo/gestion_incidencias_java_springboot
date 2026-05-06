@@ -1,5 +1,8 @@
 
 
+
+//PENDIENTE FILTRAR POR ESTADO 
+
 //Menu Incidencia alta
 let botonMenuAltaIncidencia = document.getElementById("botonMenuAltaIncidencia");
 botonMenuAltaIncidencia.addEventListener("click", () => {
@@ -91,9 +94,6 @@ botonUpdateIncidenciaTable.addEventListener("click", async (e) => {
 
 
 //DOM DE UPDATE/DELETE
-
-
-
 
 
 async function handlerUpdateIncidenciaClick(id, descripcion, estado) {
@@ -215,24 +215,6 @@ async function handlerDeleteIncidenciaClick(id) {
 
 
 
-//Menu users
-
-//Alta
-let botonMenuAltaUser = document.getElementById("botonMenuAltaUser");
-botonMenuAltaUser.addEventListener("click", () => {
-    mostrarSeccion("formUser")
-    let fila = document.getElementById("usuarioCreado");
-    fila.innerHTML = "";
-});
-
-
-//Crear user form
-let botonCrearUserForm = document.getElementById("botonCrearUserForm");
-botonCrearUserForm.addEventListener("click", () => handlerCrearUserClick());
-
-//Lista
-let botonMenuListaUsers = document.getElementById("botonMenuListaUsers");
-botonMenuListaUsers.addEventListener("click", () => mostrarSeccion("tablaUsers-container"));
 
 
 
@@ -262,6 +244,16 @@ document.addEventListener("click", (e) => {
 
     document.querySelectorAll(".acciones.open").forEach((x) => x.classList.remove("open"));
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -430,6 +422,98 @@ function loadTablaBusqueda(incidencia) {
 
 //USERS
 
+//Menu users
+
+//Alta
+let botonMenuAltaUser = document.getElementById("botonMenuAltaUser");
+botonMenuAltaUser.addEventListener("click", () => {
+    mostrarSeccion("formUser")
+    let fila = document.getElementById("usuarioCreado");
+    fila.innerHTML = "";
+});
+
+
+//Crear user form
+let botonCrearUserForm = document.getElementById("botonCrearUserForm");
+botonCrearUserForm.addEventListener("click", () => handlerCrearUserClick());
+
+//Lista
+let botonMenuListaUsers = document.getElementById("botonMenuListaUsers");
+botonMenuListaUsers.addEventListener("click", () => mostrarSeccion("tablaUsers-container"));
+
+
+
+//UPDATE USER
+let botonUpdateUserTable = document.getElementById("tablaUsers");
+botonUpdateUserTable.addEventListener("click", async (e) => {
+
+    const btnEditar = e.target.closest(".acciones__item--edit");
+    const btnEliminar = e.target.closest(".acciones__item--delete");
+    const btnGuardar = e.target.closest(".acciones__item--save");
+    const btnCancelar = e.target.closest(".acciones__item--cancel");
+
+
+    if (btnEditar) {
+        const cont = e.target.closest(".acciones");
+        const id = cont.dataset.id;
+        const tipo = cont.dataset.tipo;
+
+        const tdAccions = btnEditar.closest("td.col-accions");
+        tdAccions.replaceWith(crearDesplegableGuardar_Cancelar(id, tipo));
+        loadEditableUser(id);
+        return
+    }
+
+    if (btnGuardar) {
+        if (confirm("¿Quiere confirmar los cambios?")) {
+            const cont = e.target.closest(".acciones");
+            let input = cont.closest("tr").querySelector(".input-nombre");
+            const nombre = input.value;
+
+            input = cont.closest("tr").querySelector(".input-email");
+            const email = input.value;
+
+            const id = cont.dataset.id;
+
+            console.log(`id : ${id}`);
+
+            await handlerUpdateUserClick(id, nombre, email);
+        }
+        await handlerGetAllUsersClick();
+        return
+    }
+
+    if (btnCancelar) {
+        handlerGetAllUsersClick();
+        return
+    }
+
+    if (btnEliminar) {
+        const cont = e.target.closest(".acciones");
+        const id = cont.dataset.id;
+        if (confirm("¿Quiere eliminar el registro?")) {
+            await handlerDeleteUserClick(id);
+        }
+        await handlerGetAllUsersClick();
+
+        return
+    }
+
+
+});
+
+
+async function handlerUpdateUserClick(id, nombre, email) {
+
+    try {
+        const res = await updateUser(id, nombre, email);
+
+    } catch (error) {
+        alert(error.message);
+    }
+
+}
+
 function loadTablaUsers(datos) {
 
     let users = datos;
@@ -437,19 +521,27 @@ function loadTablaUsers(datos) {
     tabla.innerHTML = `<tr><th>ID</th><th>NOMBRE</th><th>EMAIL</th><th class="col-accions">ACCIONS</th></tr>`;
     if (!Array.isArray(users)) {
         let fila = document.createElement("tr");
-        fila.innerHTML = `<td>${users.id}</td><td>${users.nom}</td><td>${users.email}</td>`
+        fila.innerHTML = `<td>${users.id}</td><td id="nombreModificar${users.id}">${users.nom}</td><td id = "emailModificar${users.id}">${users.email}</td>`
         fila.appendChild(crearDesplegableAcciones(users.id, "user"))
         tabla.appendChild(fila);
     }
     else {
         for (let user of users) {
             let fila = document.createElement("tr");
-            fila.innerHTML = `<td>${user.id}</td><td>${user.nom}</td><td>${user.email}</td>`
-            fila.appendChild(crearDesplegableAcciones(users.id, "user"))
+            fila.innerHTML = `<td>${user.id}</td><td id="nombreModificar${user.id}">${user.nom}</td><td id = "emailModificar${user.id}">${user.email}</td>`
+            fila.appendChild(crearDesplegableAcciones(user.id, "user"))
             tabla.appendChild(fila);
         }
     }
 }
+
+function loadEditableUser(id) {
+    let nombre = document.getElementById(`nombreModificar${id}`);
+    let email = document.getElementById(`emailModificar${id}`)
+    nombre.innerHTML = `<td><input type="text" class ="input-nombre"></input></td>`
+    email.innerHTML = `<td><input type="text" class ="input-email"></input></td>`
+}
+
 
 
 
@@ -534,6 +626,17 @@ async function handlerGetUserId() {
     const user = await getUserId(id);
 
     return user;
+}
+
+
+async function handlerDeleteUserClick(id) {
+    try {
+        const res = await deleteUser(id);
+
+
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 

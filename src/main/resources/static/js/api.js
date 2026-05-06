@@ -78,7 +78,7 @@ async function updateIncidencia(id, descripcion, estado) {
         return await res.json();
 
     } catch (error) {
-        console.error("Error al crear incidencia:", error);
+        console.error("Error al actualizar:", error);
         throw error;
     }
 }
@@ -164,3 +164,48 @@ async function crearUser(usuario) {
         throw error;
     }
 }
+
+
+
+async function updateUser(id, nom, email) {
+
+    console.log(`comprovacio nom ${nombre}`)
+    try {
+        const res = await fetch(`${API_USERS}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+
+            },
+            body: JSON.stringify({ nom, email })
+        });
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}, ${res.message}`);
+        }
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("Error al actualizar:", error);
+        throw error;
+    }
+}
+
+
+async function deleteUser(id) {
+    try {
+        const res = await fetch(`${API_USERS}/${id}`, {
+            method: 'DELETE'
+        });
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}, ${res.message}`);
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error("Error al borrar:", error);
+        throw error;
+    }
+}
+

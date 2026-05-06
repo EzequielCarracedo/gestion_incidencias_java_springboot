@@ -56,13 +56,7 @@ public class UsuarioService {
         if (llistatUsuarios == null) {
             throw new UsuarioNoEncontradoException("LA LISTA ESTA VACIA");
         }
-        for (int it = 0; it < llistatUsuarios.size(); it++) {
-            if (llistatUsuarios.get(it).getId() == id) {
-                llistatUsuarios.get(it).setNom(usuarioNou.getNom());
-                llistatUsuarios.get(it).setEmail(usuarioNou.getEmail());
-                return llistatUsuarios.get(it);
-            }
-        }
+
         Usuario userModificar = llistatUsuarios.get(id);
 
         if (userModificar != null) {
