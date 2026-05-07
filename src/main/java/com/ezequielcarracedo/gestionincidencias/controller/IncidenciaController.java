@@ -36,10 +36,10 @@ public class IncidenciaController {
     }
 
     // Listar por estado
-    @GetMapping("estado/{estado}")
-    public ResponseEntity<?> getIncidenciaEstado(@PathVariable EstatIncidencia estado) {
-
-        return ResponseEntity.ok(incidenciaService.listarPorEstado(estado));
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<?> getIncidenciaEstado(@PathVariable String estado) {
+        EstatIncidencia estadoEnum = EstatIncidencia.valueOf(estado.toUpperCase());
+        return ResponseEntity.ok(incidenciaService.listarPorEstado(estadoEnum));
 
     }
 

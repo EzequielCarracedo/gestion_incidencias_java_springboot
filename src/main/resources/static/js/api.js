@@ -33,6 +33,23 @@ async function getIncidenciasById(id) {
     }
 }
 
+async function getIncidenciasByStatus(estat) {
+
+    try {
+        const res = await fetch(`${API_INCIDENCIAS}/estado/${estat}`);
+        if (!res.ok) {
+            throw new Error(`Error HTTP ${res.status}`);
+        }
+        console.log(estat);
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
+
 
 async function crearIncidencia(descripcionNova, usuarioId) {
 

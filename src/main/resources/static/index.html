@@ -50,6 +50,15 @@
         </div>
 
         <div id="tablaIncidencias-container" class="seccion" style="display: none;">
+            <div id="contFilter">
+                <select id="selectFilter">
+                    <option value="ABIERTA">ABIERTA</option>
+                    <option value="EN_PROCESO" selected>EN PROCESO</option>
+                    <option value="CERRADA">CERRADA</option>
+                </select>
+                <button type="button" id="btnFiltrar">Filtrar</button>
+            </div>
+
             <table border="1" id="tablaIncidencias">
 
             </table>
