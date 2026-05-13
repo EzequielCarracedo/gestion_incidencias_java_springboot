@@ -40,7 +40,7 @@ async function getIncidenciasByStatus(estat) {
         if (!res.ok) {
             throw new Error(`Error HTTP ${res.status}`);
         }
-        console.log(estat);
+       // console.log(res.json());
 
         return await res.json();
 
@@ -139,7 +139,7 @@ async function getAllUsers() {
 }
 
 
-async function getUserId(id) {
+async function getUserById(id) {
     try {
         const res = await fetch(`${API_USERS}/${id}`);
         if (!res.ok) {

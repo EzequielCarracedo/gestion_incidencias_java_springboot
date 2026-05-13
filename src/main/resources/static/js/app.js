@@ -1,5 +1,5 @@
 
-//PENDIENTE FILTRAR POR ESTADO 
+//Pendiente buscar user mostrar seccions
 
 
 //EVENT DELEGATION MOSTRAR SECCION
@@ -11,6 +11,7 @@ document.getElementById("contMenu").addEventListener("click", async (e) => {
     const btnGetIncidencias = e.target.closest("#botonMenuListaIncidencias");
     const btnGetUsers = e.target.closest("#botonMenuListaUsers")
     const btnBuscarIncidencia = e.target.closest("#botonMenuBuscarIncidencia");
+    const btnBuscarUser = e.target.closest("#botonMenuBuscarUser");
 
 
     if (btnCrearIncidencia) {
@@ -36,6 +37,9 @@ document.getElementById("contMenu").addEventListener("click", async (e) => {
     if (btnBuscarIncidencia) {
         mostrarSeccion("seccionBuscarIncidencia")
         resetTablaBusqueda();
+    }
+    if(btnBuscarUser){
+        mostrarSeccion("botonMenuBuscarUser");
     }
 
 
@@ -204,12 +208,7 @@ async function handlerGetIncidenciasPorEstado() {
     try {
         const incidencias = await getIncidenciasByStatus(estado);
 
-        if (!incidencias || incidencias.length === 0) {
-
-            alert("NO HAY INCIDENCIAS CON ESTE ESTADO");
-            return;
-        }
-        loadTablaBusqueda(incidencias);
+        loadTablaIncidencias(incidencias);
     }
     catch (error) {
 
@@ -557,6 +556,21 @@ async function handlerGetAllUsersClick() {
 
 }
 
+
+//FER
+async function handlerGetUserId(id) {
+
+    try {
+        const user = await getUserById(id);
+        loadTablaUsers(user);
+    }
+    catch (error) {
+        alert("No existe ese usuario");
+
+    }
+
+}
+
 async function handlerUpdateUserClick(id, nombre, email) {
 
     try {
@@ -664,13 +678,7 @@ function loadEditableUser(id) {
 
 
 
-//FER
-async function handlerGetUserId() {
 
-    const user = await getUserId(id);
-
-    return user;
-}
 
 
 
